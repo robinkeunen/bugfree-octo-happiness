@@ -3,7 +3,7 @@ package tme1.ex2;
 import oracle.kv.*;
 
 /**
- * TME avec KVStore : Init
+ * Initializes the kvstore for the second exercise of tmeKVStore.
  */
 public class Init{
 
@@ -26,6 +26,7 @@ public class Init{
 	 */
 	private Init(String[] argv) {
 
+		// kvstore development parameters
 		String storeName = "kvstore";
 		String hostName = "localhost";
 		String hostPort = "5000";
@@ -73,15 +74,17 @@ public class Init{
 	}
 
 	/**
-	 * Initialisation
+	 * Initialisation. Puts 200 products P0 to P199 classified in
+	 * categories C0 to C9.
 	 */
 	void go() throws Exception {
 		System.out.println("Initialisation...");
 
 		for (int i = 0; i < 200; i++) {
-			String major = "C" + i/10;
+			String major = "C" + i/20;
 			String minor = "P" + i;
 			String v = "1";
+			System.out.println("write " + major + " " + minor + " " + v);
 			store.put(Key.createKey(major, minor),
 					  Value.createValue(v.getBytes()));
 		}

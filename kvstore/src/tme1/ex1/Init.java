@@ -26,6 +26,7 @@ public class Init{
      */
     private Init(String[] argv) {
 
+    	// local store parameters
         String storeName = "kvstore";
         String hostName = "localhost";
         String hostPort = "5000";
@@ -73,7 +74,7 @@ public class Init{
     }
 
     /**
-     * Initialisation
+     * Initialisation. Creates a pair <"P1", 0> in the store.
      */
     void go() throws Exception {
         System.out.println("Initialisation...");
