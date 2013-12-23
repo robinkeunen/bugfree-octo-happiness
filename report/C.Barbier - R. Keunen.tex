@@ -1,0 +1,211 @@
+% !TEX encoding = UTF-8
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+
+
+%math 
+\usepackage{amsmath}
+%\usepackage{amssymb} // Decommenter si le dernier n'est pas suffisant
+
+%Chimie
+\usepackage[version=3]{mhchem}
+%cf http://fr.wikibooks.org/wiki/LaTeX/%C3%89crire_des_formules_chimiques
+
+% Allows for temporary adjustment of side margins
+% Lorsque les tableaux sont trop grands
+\usepackage{chngpage}
+
+% provides filler text
+\usepackage{lipsum}
+% usage : \lipsum[1]
+
+% just makes the table prettier (see \toprule, \bottomrule, etc. commands below)
+\usepackage{booktabs}
+
+%Mise en page
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage[top=3cm, bottom=3cm, left=4cm, right=3cm]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{placeins}
+
+\definecolor{gris}{gray}{0.5}
+\definecolor{code}{gray}{0.95}
+
+% Table des matières cliquable 
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks, % empécher latex de colorer les liens
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black, % couleur des liens dans la table des matières
+    urlcolor=blue
+}
+
+%Points dans la table des matières
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % Ligne de points dans la table des matières
+
+
+%Page de garde
+
+\newlength{\larg}
+\setlength{\larg}{14.5cm}
+
+% Pour corriger alignement, jouer avec la taille de tabular (± 6cm)
+\title{
+{\rule{\larg}{1mm}}\vspace{7mm}
+\begin{tabular}{p{4cm} r}
+   & {\Huge {\bf NoSQL avec KVStore}} \\
+   & \\
+   & {\Large Administration des bases de données réparties}
+\end{tabular}\\
+\vspace{2mm}
+{\rule{\larg}{1mm}}
+\vspace{2mm} \\
+\begin{tabular}{p{10cm} r}
+   & {\large \bf NI??? - ABDR-1} \\
+   &{\large \bf \bsc{Hubert Naackle ???}}\\
+   & {\large  \today}
+\end{tabular}\\
+\vspace{10cm}
+}
+\author{\begin{tabular}{p{13.7cm}}
+\bsc{Robin Keunen}\\
+3303515\\
+\bsc{Clément Barbier}\\
+xxxxxxx
+\end{tabular}\\
+\hline }
+\date{}
+
+\begin{document}
+
+% Titre
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% Mise en page
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{\itshape \textcolor{gris}{Banded Iron Formation}}
+\lfoot{\itshape \textcolor{gris}{\'Elements de paléontologie}}
+\cfoot{}
+\rfoot{\itshape \textcolor{gris}{\thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newpage 
+
+\section{Transaction et concurrence}
+Cette section présente la solution du tme KVStore.
+Le code se trouve dans le projet kvstore dans les packages \verb tme1.ex1  et \verb tme1.ex2 .
+
+\subsection*{Exercice 1}
+    La classe \verb init  permet d'initialiser le store afin d'obtenir des résultats reproductibles.
+\subsubsection*{A1}
+    Dans cet exercice, nous ne devions pas tenir compte des accès concurrents au données. 
+    Le programme lit simplement la valeur stockée à la clé $P1$, incrémente ce qu'il a lu et l'écrit à la clé $P1$.
+    Cette solution n'est plus viable dès que deux programmes manipulent la même donnée simultanément.
+    En effet, si les programmes $a$ et $b$ lisent $n$ simultanément, ils écriront chacun $n + 1$ en base alors que la valeur aurait du être incrémentée deux fois.
+    La valeur finale devrait être $n+2$.
+    
+    Ce résultat est montré par l'expérience: en lançant deux programmes \verb A1  qui lisent et incrémentent 1000 fois la valeur stockée à P1, on obtient une valeur finale en $P1$ de 1261, 1269 et 1289 au lieu de 2000.
+
+\subsubsection*{A2}
+    Dans \verb A2 , le programme vérifie si la valeur stockée en base est fraiche avant d'écrire.
+    On vérifie la fraicheur grace à la fonction \verb putIfVersion .
+    Cette fonction n'écrit en base que si la version de la donnée en base correspond à la version de la donnée que nous y avions lue.
+    Si la version est périmée, le programme relit la valeur et tente à nouveau de l'incrémenter et de la réécrire.
+    
+    Cette version retourne les résultats attendus : deux programmes \verb A2  exécutés simultanément incrémentent effectivement 2000 fois la valeur de $P1$.
+    
+\subsection*{Exercice 2}
+
+\subsubsection*{M1}
+    Ce programme est identique à \verb A2 , il lit les valeurs de $P0$ à $P4$ en base, les incrémente et les écrit en base.
+    Si on vérifie la fraicheur des données avant de réécrire, il n'y aura pas de problème de cohérence de données.
+    En effet, vu que les données écrites (de  $P0$ à $P4$) sont indépendantes les unes des autres, l'ordre d'écriture de deux programmes n'affecte pas la valeur des données finales. 
+
+\subsubsection*{M2}
+    En exécutant deux programmes \verb M2  en série, on obtient une valeur finale de 2000.
+    En exécutant deux programmes \verb M2  en parallèle, les résultats divergent, on obtient par exemple lors de 3 expériences consécutives: 2054, 2056 et 2044.
+    
+    Cette erreur est provoquée par la non-atomicité des écritures en base. 
+    L'écriture de $max+1$ sur P$0..5$ peut être interrompue par l'écriture d'un programme concurrent.
+    Quand l'écriture est interrompue en $P3$ par exemple, la valeur $max + 1$ a déjà été écrite en $P0$, $P1$ et $P2$. 
+    Le programme recommence cette itération (lecture et écriture des 5 produits).
+    Au final, les valeurs auront été incrémentées deux fois lors de cette itération.  
+    Voir la table \ref{M2} en annexe pour un exemple d'exécution.
+
+\subsubsection*{Transactions}
+
+
+\section*{Transactions et équilibrage de charge}
+
+
+\appendix
+
+\begin{table}
+\label{M2}
+\caption{Exemple d'exécution de  M2  sans le mécanisme des transactions.
+Le programme $a$ est interrompu avant sa dernière écriture. 
+$a$ recommence l'itération lecture/écriture.
+Au final, les valeurs sont incrémentées deux fois lors de cette itération.
+}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline 
+programme a & programme b\tabularnewline
+\hline 
+\hline 
+read(P4) = 73 & \tabularnewline
+\hline 
+write(P0, 74) & \tabularnewline
+\hline 
+write(P1, 74) & \tabularnewline
+\hline 
+write(P2, 74) & \tabularnewline
+\hline 
+write(P3, 74) & \tabularnewline
+\hline 
+ & read(P0) = 74\tabularnewline
+\hline 
+ & read(P1) = 74\tabularnewline
+\hline 
+ & read(P2) = 74\tabularnewline
+\hline 
+ & read(P3) = 74\tabularnewline
+\hline 
+ & read(P4) = 73\tabularnewline
+\hline 
+ & write(P0, 75)\tabularnewline
+\hline 
+ & write(P1, 75)\tabularnewline
+\hline 
+ & write(P2, 75)\tabularnewline
+\hline 
+ & write(P3, 75)\tabularnewline
+\hline 
+ & write(P4, 75)\tabularnewline
+\hline 
+write(P4, 64) !! & \tabularnewline
+\hline 
+read(P0..4) = 75 & \tabularnewline
+\hline 
+write(P0..4, 75) & \tabularnewline
+\hline 
+\end{tabular}
+\end{center}
+\end{table}
+
+\end{document}	
+
+

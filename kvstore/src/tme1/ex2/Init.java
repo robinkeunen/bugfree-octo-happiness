@@ -14,7 +14,7 @@ public class Init{
 	 */
 	public static void main(String args[]) {
 		try {
-			Init a = new Init(args);
+			Init a = new Init();
 			a.go();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,6 +64,18 @@ public class Init{
 				(new KVStoreConfig(storeName, hostName + ":" + hostPort));
 	}
 
+	public Init() {
+
+		// kvstore development parameters
+		String storeName = "kvstore";
+		String hostName = "localhost";
+		String hostPort = "5000";
+		
+		store = KVStoreFactory.getStore
+				(new KVStoreConfig(storeName, hostName + ":" + hostPort));
+	}
+
+	
 	private void usage(String message) {
 		System.out.println("\n" + message + "\n");
 		System.out.println("usage: " + getClass().getName());

@@ -3,24 +3,24 @@ package tme1.ex1;
 import oracle.kv.*;
 
 /**
- * Our solution to the exercises 1 et 2 of tme KVstore
+ * Our solution to the exercises 1 tme KVstore
  * @author Robin Keunen
  * @author Clément Barbier
  */
-public class A {
+public class A2 {
 	private final KVStore store;
 	
 	public static void main(String[] args) {
 		try {
 			//Init.initTME(args);
-			A a = new A();
+			A2 a = new A2();
 			a.go();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public A() {
+	public A2() {
 		String storeName = "kvstore";
 		String hostName = "localhost";
 		String hostPort = "5000";
@@ -40,12 +40,12 @@ public class A {
 			while (true) { // attempts to increment until it succeeds.
 				ValueVersion vs = store.get(k);
 				int quantity = Integer.parseInt(new String(vs.getValue().getValue()));
-				//System.out.println("read " + quantity);
+				System.out.println("read " + quantity);
 				quantity++;
 				
 				// write is successful if putIfVersion writes on the same version.
 				if (store.putIfVersion(k, Value.createValue(String.valueOf(quantity).getBytes()), vs.getVersion()) != null) {
-					//System.out.println("wrote " + quantity);
+					System.out.println("wrote " + quantity);
 					break;
 				}
 				else {
