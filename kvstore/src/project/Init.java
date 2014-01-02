@@ -27,8 +27,8 @@ public class Init{
 	private Init(String[] argv) {
 
 		// local store parameters
-		String storeName = "kvstore";
-		String hostName = "localhost";
+		String storeName = "store1";
+		String hostName = "127.0.0.1";
 		String hostPort = "5000";
 
 		final int nArgs = argv.length;
