@@ -30,7 +30,7 @@ public class Item implements Serializable {
 	private String stringField5;
 	
 	
-	static Item createRandomItem() {
+	public static Item createRandomItem() {
 		Item item = new Item();
 		
 		Random random = new Random();
@@ -41,11 +41,11 @@ public class Item implements Serializable {
 		item.setIntField4(random.nextInt());
 		item.setIntField5(random.nextInt());
 		
-		item.setStringField1(String.valueOf(random.nextInt()));
-		item.setStringField2(String.valueOf(random.nextInt()));
-		item.setStringField3(String.valueOf(random.nextInt()));
-		item.setStringField4(String.valueOf(random.nextInt()));
-		item.setStringField5(String.valueOf(random.nextInt()));
+		item.setStringField1(Utils.randomWord(10));
+		item.setStringField2(Utils.randomWord(10));
+		item.setStringField3(Utils.randomWord(10));
+		item.setStringField4(Utils.randomWord(10));
+		item.setStringField5(Utils.randomWord(10));
 		
 		System.out.println(item.toString());
 		return item;
@@ -59,7 +59,7 @@ public class Item implements Serializable {
 	public String toString() {
 		return "Item [intField1=" + intField1 + ", intField2=" + intField2
 				+ ", intField3=" + intField3 + ", intField4=" + intField4
-				+ ", intField5=" + intField5 + ", stringField1=" + stringField1
+				+ ", intField5=" + intField5 + ",\n      stringField1=" + stringField1
 				+ ", stringField2=" + stringField2 + ", stringField3="
 				+ stringField3 + ", stringField4=" + stringField4
 				+ ", stringField5=" + stringField5 + "]";
