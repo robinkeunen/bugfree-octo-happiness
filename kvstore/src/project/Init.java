@@ -84,6 +84,7 @@ public class Init{
 		for (long profileNumber = 0; profileNumber < 1000; profileNumber++) {
 			key = Key.createKey(String.valueOf(profileNumber));
 			store.put(key, value);
+			Item.createRandomItem();
 			System.out.println("set " + key.toString() + " to " + 0);
 		}
 		

@@ -1,4 +1,4 @@
-package project.dispatchers;
+package project.masters.dispatchers;
 
 import oracle.kv.Key;
 
@@ -12,6 +12,11 @@ public class SingleStoreDispatcher implements StoreDispatcher {
 
 	@Override
 	public long storeID(Key key) {
+		return 0;
+	}
+
+	@Override
+	public int getStoreIndexForKey(Long profileKey) {
 		return 0;
 	}
 
