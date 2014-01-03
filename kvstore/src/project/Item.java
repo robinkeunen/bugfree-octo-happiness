@@ -1,5 +1,12 @@
 package project;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Random;
 import java.util.UUID;
@@ -10,48 +17,48 @@ public class Item implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 4235893260127955802L;
-	
+
 	private final UUID uuid;
 
 	public Item() {
 		this.uuid = UUID.randomUUID();
 	}
-	
+
 	private int intField1;
 	private int intField2;
 	private int intField3;
 	private int intField4;
 	private int intField5;
-	
+
 	private String stringField1;
 	private String stringField2;
 	private String stringField3;
 	private String stringField4;
 	private String stringField5;
-	
-	
+
+
 	public static Item createRandomItem() {
 		Item item = new Item();
-		
+
 		Random random = new Random();
-		
+
 		item.setIntField1(random.nextInt());
 		item.setIntField2(random.nextInt());
 		item.setIntField3(random.nextInt());
 		item.setIntField4(random.nextInt());
 		item.setIntField5(random.nextInt());
-		
+
 		item.setStringField1(Utils.randomWord(10));
 		item.setStringField2(Utils.randomWord(10));
 		item.setStringField3(Utils.randomWord(10));
 		item.setStringField4(Utils.randomWord(10));
 		item.setStringField5(Utils.randomWord(10));
-		
+
 		System.out.println(item.toString());
 		return item;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -64,8 +71,67 @@ public class Item implements Serializable {
 				+ stringField3 + ", stringField4=" + stringField4
 				+ ", stringField5=" + stringField5 + "]";
 	}
+
+	public byte[] toByteArray() throws IOException {
+		byte[] bytes;
+
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutput out = null;
+		try {
+			out = new ObjectOutputStream(bos);   
+			out.writeObject(this);
+			bytes = bos.toByteArray();
+		} finally {
+			try {
+				if (out != null) {
+					out.close();
+				}
+			} catch (IOException ex) {
+				// ignore close exception
+			}
+			try {
+				bos.close();
+			} catch (IOException ex) {
+				// ignore close exception
+			}
+
+		}
+		return bytes;
+	}
 	
-	
+	/**
+	 * 
+	 * @param bytes
+	 * @return
+	 * @throws IOException
+	 * @throws ClassNotFoundException if the byte array did not represent a known class.
+	 */
+	public static Item fromByteArray(byte[] bytes) throws IOException, ClassNotFoundException {
+		
+		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+		ObjectInput in = null;
+		Item item = null;
+		try {
+		  in = new ObjectInputStream(bis);
+		  item = (Item) in.readObject(); 
+		} finally {
+		  try {
+		    bis.close();
+		  } catch (IOException ex) {
+		    // ignore close exception
+		  }
+		  try {
+		    if (in != null) {
+		      in.close();
+		    }
+		  } catch (IOException ex) {
+		    // ignore close exception
+		  }
+		}
+		return item;
+	}
+
+
 	/**
 	 * @return the intField1
 	 */
@@ -194,5 +260,5 @@ public class Item implements Serializable {
 	public UUID getUuid() {
 		return uuid;
 	}	
-	
+
 }
