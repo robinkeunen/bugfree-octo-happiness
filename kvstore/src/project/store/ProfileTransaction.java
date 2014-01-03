@@ -1,4 +1,4 @@
-package project;
+package project.store;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -12,6 +12,7 @@ import oracle.kv.Operation;
 import oracle.kv.OperationExecutionException;
 import oracle.kv.OperationFactory;
 import oracle.kv.Value;
+import project.Item;
 
 public class ProfileTransaction {
 	
@@ -35,7 +36,6 @@ public class ProfileTransaction {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("add put for item " + item.getItemId());
 		
 		Operation put = operationFactory.createPut(key, value);
 		operations.add(put);
@@ -43,8 +43,9 @@ public class ProfileTransaction {
 	
 	public void execute() throws OperationExecutionException {
 		try {
-			System.out.println("Execute Transaction on profile " + profileId);
+			//System.out.println(profileId + " in");
 			store.execute(operations);
+			//System.out.println(profileId + " out");
 		} catch (DurabilityException e) {
 			e.printStackTrace();
 		} catch (FaultException e) {

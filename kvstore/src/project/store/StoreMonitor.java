@@ -1,4 +1,4 @@
-package project;
+package project.store;
 
 import java.util.HashMap;
 
@@ -25,6 +25,7 @@ public class StoreMonitor {
 			max = 0L;
 		}
 		itemIds.put(profile, max + 1);
+		
 		return max + 1;
 	}
 }

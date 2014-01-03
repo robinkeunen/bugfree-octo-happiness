@@ -9,7 +9,6 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Random;
-import java.util.UUID;
 
 public class Item implements Serializable {
 

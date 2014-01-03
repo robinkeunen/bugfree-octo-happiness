@@ -1,7 +1,8 @@
-package project;
+package project.store;
 
 import oracle.kv.KVStore;
 import oracle.kv.OperationExecutionException;
+import project.Item;
 
 public class StoreController {
 	private KVStore store;

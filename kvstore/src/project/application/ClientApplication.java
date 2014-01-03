@@ -1,13 +1,14 @@
 package project.application;
 
 import java.util.Random;
+import java.util.concurrent.Callable;
 
 import oracle.kv.OperationExecutionException;
 import project.ConfigsServer;
 import project.master.MissingConfigurationException;
 import project.master.StoreMaster;
 
-public class ClientApplication {
+public class ClientApplication implements Callable<ClientApplicationResult> {
 
 	private String name;
 	private StoreMaster storeMaster;
@@ -17,7 +18,7 @@ public class ClientApplication {
 		try {
 			StoreMaster.setKVStores(ConfigsServer.getServersStores());
 			this.storeMaster = StoreMaster.getStoreMaster();
-			
+
 		} catch (MissingConfigurationException e) {
 			e.printStackTrace();
 		}
@@ -28,8 +29,9 @@ public class ClientApplication {
 		this.name = name;
 	}
 
+	@Override
+	public ClientApplicationResult call() throws Exception {
 
-	public long go() throws MissingConfigurationException {
 		System.out.println("  ClientApplication " + this.name + " go...");
 
 		Random random = new Random();
@@ -41,7 +43,7 @@ public class ClientApplication {
 		int iterations = 0;
 		long profileId = 0;
 
-		while (System.nanoTime() - startTime < fiveSeconds) {
+		while (System.nanoTime() - startTime < tenSeconds) {
 			profileId = (long) random.nextInt(5);
 			try {
 				storeMaster.doProfileTransaction(profileId);
@@ -51,13 +53,15 @@ public class ClientApplication {
 			iterations++;
 		}
 		long executionTime = System.nanoTime() - startTime;
-		float averageIterationTime = (float) executionTime/ (float) iterations;
-		System.out.println("    Performed  " + iterations + "  iterations.");
-		System.out.println("    Total execution time: " + executionTime / 1000000L + " ms.");
-		System.out.println("    Average execution time: " + (executionTime/iterations) + " ns = " + (executionTime/iterations) / 1000000L + " ms");
+		long averageIterationTime = executionTime/ iterations;
+		ClientApplicationResult result = 
+				new ClientApplicationResult(iterations, executionTime, averageIterationTime);
+		//System.out.println("    " + this.name + " Performed  " + iterations + "  iterations.");
+		//System.out.println("    " + this.name + " Total execution time: " + executionTime / 1000000L + " ms.");
+		//System.out.println("    " + this.name + " Average execution time: " + (executionTime/iterations) + " ns = " + (executionTime/iterations) / 1000000L + " ms");
 
 		System.out.println("  ClientApplication " + this.name + " go... done");
-		return (long) averageIterationTime;	
-
+		return result;
 	}
+
 }
