@@ -8,6 +8,8 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -22,6 +24,9 @@ import oracle.kv.ValueVersion;
 import oracle.kv.avro.AvroCatalog;
 import oracle.kv.avro.GenericAvroBinding;
 import project.Item;
+import project.application.ClientApplication;
+import project.master.MissingConfigurationException;
+import project.master.StoreMaster;
 
 public class Tests {
 	private final KVStore store;
@@ -49,85 +54,13 @@ public class Tests {
 	 * Reads item P1 and increments it a thousand time.
 	 * Robust to concurrent writes; 
 	 * @throws IOException 
+	 * @throws MissingConfigurationException 
 	 * 
 	 */
-	public void go() throws IOException {
-		System.out.println("Tests.go...");
-
-		Item wItem = Item.createRandomItem();
-		System.out.println("wItem: \n" + wItem.toString()); 
-		byte[] yourBytes;
-
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutput out = null;
-		try {
-			out = new ObjectOutputStream(bos);   
-			out.writeObject(wItem);
-			yourBytes = bos.toByteArray();
-		} finally {
-			try {
-				if (out != null) {
-					out.close();
-				}
-			} catch (IOException ex) {
-				// ignore close exception
-			}
-			try {
-				bos.close();
-			} catch (IOException ex) {
-				// ignore close exception
-			}
-		}
-		
-		store.put(Key.createKey("key"), Value.createValue(yourBytes));
-		ValueVersion vv = store.get(Key.createKey("key"));
-
-		ByteArrayInputStream bis = new ByteArrayInputStream(vv.getValue().getValue());
-		ObjectInput in = null;
-		try {
-		  in = new ObjectInputStream(bis);
-		  Item o = (Item) in.readObject(); 
-		  System.out.println(o.toString());
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-		  try {
-		    bis.close();
-		  } catch (IOException ex) {
-		    // ignore close exception
-		  }
-		  try {
-		    if (in != null) {
-		      in.close();
-		    }
-		  } catch (IOException ex) {
-		    // ignore close exception
-		  }
-		}
-
-
-
-		//		Schema.Parser parser = new Schema.Parser();
-		//		parser.parse(new File("/Users/roke/Dropbox/eclipse-ws/abdr/kvstore/src/project/item.avsc"));
-		//		Schema schema = parser.getTypes().get("project.Item");
-		//		AvroCatalog catalog = store.getAvroCatalog();
-		//		GenericAvroBinding binding = catalog.getGenericBinding(schema);
-		//		
-		//		GenericRecord item = new GenericData.Record(schema);
-		//		item.put("intField1", 3);
-		//		store.put(Key.createKey("key"), binding.toValue(item));
-		//		
-		//		ValueVersion vv = store.get(Key.createKey("key"));
-		//		GenericRecord read;
-		//		int readField;
-		//		
-		//		if (vv != null) {
-		//			read = binding.toObject(vv.getValue());
-		//			readField = (Integer) read.get("intField1");
-		//			System.out.println("read " + readField);
-		//		}
-
+	public void go() throws IOException, MissingConfigurationException {
+		System.out.println("Tests.go() ...");
+		ClientApplication ca = new ClientApplication("A");
+		ca.go();
 		System.out.println("Tests.go() ... done");	
 	}
 

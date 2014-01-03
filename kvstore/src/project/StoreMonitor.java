@@ -11,6 +11,7 @@ public class StoreMonitor {
 
 	public StoreMonitor(KVStore store) {
 		this.store = store;
+		// TODO initiate parameters from store
 		this.itemIds = new HashMap<Long, Long>();
 	}
 	
