@@ -2,7 +2,11 @@ package project.application;
 
 import java.util.Random;
 
+<<<<<<< HEAD
 import oracle.kv.OperationExecutionException;
+=======
+import project.ConfigsServer;
+>>>>>>> 6109e2e22bef114d0bbad77368dedcac0f95d45b
 import project.master.MissingConfigurationException;
 import project.master.StoreMaster;
 
@@ -15,6 +19,7 @@ public class ClientApplication {
 		this.name = "";
 		try {
 			this.storeMaster = StoreMaster.getStoreMaster();
+			StoreMaster.setKVStores(ConfigsServer.getServersStores());
 		} catch (MissingConfigurationException e) {
 			e.printStackTrace();
 		}
