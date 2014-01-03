@@ -4,7 +4,7 @@ import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
 import oracle.kv.KVStoreFactory;
 
-public class KvStore {
+public class ServerParameters {
 
 	private String storeName = "kvstore";
 	private String hostName = "localhost";
@@ -16,7 +16,7 @@ public class KvStore {
 	 * @param hostName
 	 * @param hostPort
 	 */
-	public KvStore(String storeName, String hostName, String hostPort) {
+	public ServerParameters(String storeName, String hostName, String hostPort) {
 		this.storeName = storeName;
 		this.hostName = hostName;
 		this.hostPort = hostPort;

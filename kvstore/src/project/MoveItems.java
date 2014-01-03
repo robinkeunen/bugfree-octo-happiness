@@ -7,18 +7,10 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.SortedMap;
 
-import oracle.kv.Depth;
-import oracle.kv.Direction;
 import oracle.kv.KVStore;
 import oracle.kv.Key;
 import oracle.kv.Value;
@@ -31,8 +23,8 @@ public class MoveItems {
 	private final int NB_PROFIL = 10;
 	
 	public MoveItems(String[] args) {
-		KvStore kvstoreA = new KvStore("store1","127.0.0.1","5000");
-		KvStore kvstoreB = new KvStore("store2","127.0.0.1","5020");
+		ServerParameters kvstoreA = new ServerParameters("store1","127.0.0.1","5000");
+		ServerParameters kvstoreB = new ServerParameters("store2","127.0.0.1","5020");
 		this.storeA = kvstoreA.getStore();
 		this.storeB = kvstoreB.getStore();
 	}

@@ -2,6 +2,7 @@ package project.application;
 
 import java.util.Random;
 
+import project.ConfigsServer;
 import project.master.MissingConfigurationException;
 import project.master.StoreMaster;
 
@@ -14,6 +15,7 @@ public class ClientApplication {
 		this.name = "";
 		try {
 			this.storeMaster = StoreMaster.getStoreMaster();
+			StoreMaster.setKVStores(ConfigsServer.getServersStores());
 		} catch (MissingConfigurationException e) {
 			e.printStackTrace();
 		}
