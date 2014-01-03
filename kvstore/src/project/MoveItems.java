@@ -7,11 +7,13 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.SortedMap;
 
@@ -30,21 +32,31 @@ public class MoveItems {
 	
 	public MoveItems(String[] args) {
 		KvStore kvstoreA = new KvStore("store1","127.0.0.1","5000");
-		//KvStore kvstoreB = new KvStore("store2","127.0.0.1","5020");
+		KvStore kvstoreB = new KvStore("store2","127.0.0.1","5020");
 		this.storeA = kvstoreA.getStore();
-		//this.storeB = kvstoreB.getStore();
-		this.storeB = null;
+		this.storeB = kvstoreB.getStore();
 	}
 
 	public static void main(String[] args) {
 		try {
 			MoveItems mvi = new MoveItems(args);
+			mvi.removeAll();
+			mvi.test();
 			mvi.init();
 			mvi.test();
 			mvi.move();
+			mvi.test();
 			mvi.end();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void removeAll() {
+		for(int i = 1; i <= NB_PROFIL; i++) {
+			// Profil
+			String pdtKey = "P"+i;
+			if(storeA !=null )removeProfil(storeA, pdtKey);
 		}
 	}
 
@@ -86,32 +98,57 @@ public class MoveItems {
 	 */
 	private void test() {
 		System.out.println("Test Store(s)...");
-		for(int i = 1; i <= NB_PROFIL; i++) {
-			// Key
-			String pdtKey = "P"+i;
-			Key key = Key.createKey(pdtKey);
-			// Get Stored Items for this majorKey
-			SortedMap<Key, ValueVersion> items = storeA.multiGet(key, null, null);
-			for (Map.Entry<Key, ValueVersion> entry : items.entrySet()) {
-				Item item = byteArrayToItem(entry.getValue().getValue().getValue());
-				if(item != null) {
-					System.out.println("Get "+entry.getKey().getFullPath()+" = "+item.toString());
-				}
-				else {
-					System.err.println("ERROR : Get "+entry.getKey().getFullPath()+" = "+entry.getValue().getValue().toString());
-				}
-			} 
-		}
+		System.out.println("--- Store1 ---");
+		this.printStore(this.storeA);
+		System.out.println("--- Store2 ---");
+		this.printStore(this.storeB);
 		System.out.println("...Test Store(s) Done");
 	}
 	
 	private void move() {
-		
+		// Move P5
+		String profilKey = "P5";
+		moveProfil(storeA, storeB, profilKey);
 	}
 
 	private void end() {
 		if(this.storeA != null) this.storeA.close();
 		if(this.storeB != null) this.storeB.close();
+	}
+	
+	private void moveProfil(KVStore kv_src, KVStore kv_targ, String profilID) {
+		// Read in StoreA
+		Key key = Key.createKey(profilID);
+		SortedMap<Key, ValueVersion> profilItems = kv_src.multiGet(key, null, null);
+		System.out.println("MOVE - GET ITEMS OF "+profilID+" FROM StoreSrc = "+profilItems.size()+" item(s).");
+		// Write in StoreB
+		for (Map.Entry<Key, ValueVersion> entry : profilItems.entrySet()) {
+			System.out.println("MOVE - MOVE "+entry.getKey().getFullPath()+" from StoreSrc to StoreTarg");
+			kv_targ.put(entry.getKey(), entry.getValue().getValue());
+		}
+		// Delete in StoreA
+		System.out.println("MOVE - DELETE "+profilID+" from StoreSrc");
+		removeProfil(kv_src, profilID);		
+	}
+	
+	private void removeProfil(KVStore kv, String profilID) {
+		Key key = Key.createKey(profilID);
+		kv.multiDelete(key, null, null);
+	}
+	
+	private void printStore(KVStore kv) {
+		for(int i = 1; i <= NB_PROFIL; i++) {
+			// Key
+			String profilID = "P"+i;
+			Key key = Key.createKey(profilID);
+			SortedMap<Key, ValueVersion> items = kv.multiGet(key, null, null);
+			for (Map.Entry<Key, ValueVersion> entry : items.entrySet()) {
+				Item item = byteArrayToItem(entry.getValue().getValue().getValue());
+				if(item != null) {
+					System.out.println("Get "+entry.getKey().getFullPath()+" = "+item.toString());
+				}
+			} 
+		}
 	}
 	
 	private byte[] itemToByteArray(final Item it) {
