@@ -18,11 +18,11 @@ public class Item implements Serializable {
 	 */
 	private static final long serialVersionUID = 4235893260127955802L;
 
-	private final UUID uuid;
-
 	public Item() {
-		this.uuid = UUID.randomUUID();
+		this.itemId = 0;
 	}
+	
+	private long itemId;
 
 	private int intField1;
 	private int intField2;
@@ -54,7 +54,6 @@ public class Item implements Serializable {
 		item.setStringField4(Utils.randomWord(10));
 		item.setStringField5(Utils.randomWord(10));
 
-		System.out.println(item.toString());
 		return item;
 	}
 
@@ -253,12 +252,12 @@ public class Item implements Serializable {
 		this.stringField5 = stringField5;
 	}
 
-
-	/**
-	 * @return the uuid
-	 */
-	public UUID getUuid() {
-		return uuid;
+	public long getItemId() {
+		return this.itemId;
+	}	
+	
+	public void setItemId(long id) {
+		this.itemId = id;
 	}	
 
 }

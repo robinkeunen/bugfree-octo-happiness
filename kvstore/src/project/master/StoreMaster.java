@@ -7,6 +7,7 @@ import java.util.SortedMap;
 
 import oracle.kv.KVStore;
 import oracle.kv.Key;
+import oracle.kv.OperationExecutionException;
 import oracle.kv.ValueVersion;
 import project.StoreController;
 import project.masters.dispatchers.SingleStoreDispatcher;
@@ -48,7 +49,7 @@ public class StoreMaster {
 		return storeMaster;
 	}
 	
-	public void doProfileTransaction(Long profileKey) {
+	public void doProfileTransaction(Long profileKey) throws OperationExecutionException {
 		
 		// TODO remove this fake timer
 		long time = System.currentTimeMillis();
@@ -60,6 +61,7 @@ public class StoreMaster {
 
 	private void moveProfil(KVStore kv_src, KVStore kv_targ, String profilID) {
 		// Read in StoreA
+		// TODO manipulate StoreController instead of KVStores
 		Key key = Key.createKey(profilID);
 		SortedMap<Key, ValueVersion> profilItems = kv_src.multiGet(key, null, null);
 		System.out.println("MOVE - GET ITEMS OF "+profilID+" FROM StoreSrc = "+profilItems.size()+" item(s).");

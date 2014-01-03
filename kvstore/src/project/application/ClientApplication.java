@@ -2,6 +2,7 @@ package project.application;
 
 import java.util.Random;
 
+import oracle.kv.OperationExecutionException;
 import project.master.MissingConfigurationException;
 import project.master.StoreMaster;
 
@@ -39,8 +40,13 @@ public class ClientApplication {
 		long profileId = 0;
 		
 		while (System.nanoTime() - startTime < fiveSeconds) {
-			profileId = random.nextLong();
-			storeMaster.doProfileTransaction(profileId);
+			profileId = (long) random.nextInt(5);
+			try {
+				storeMaster.doProfileTransaction(profileId);
+			} catch (OperationExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			iterations++;
 		}
 		long executionTime = System.nanoTime() - startTime;
