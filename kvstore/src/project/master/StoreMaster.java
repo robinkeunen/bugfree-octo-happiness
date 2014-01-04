@@ -51,6 +51,7 @@ public class StoreMaster {
 	public void doProfileTransaction(Long profileKey) throws OperationExecutionException {
 		
 		StoreController targetStore = stores.get(dispatcher.getStoreIndexForKey(profileKey));
+		//System.out.println(dispatcher.getStoreIndexForKey(profileKey));
 		targetStore.doProfileTransaction(profileKey);
 	}
 
