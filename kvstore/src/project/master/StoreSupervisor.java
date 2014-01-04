@@ -19,24 +19,41 @@ public class StoreSupervisor implements Runnable {
 	public void run() {
 		while(keepRunning) {
 			System.out.println("StoreSupervisor - Start");
+			
 			// DEBUG
-			StoreMaster.stores.get(0).setState(State.OVERLOADED);
-			StoreMaster.stores.get(1).setState(State.UNDERLOADED);
+			try {
+				StoreMaster.getStoreMaster().stores.get(0).setState(State.OVERLOADED);
+				StoreMaster.getStoreMaster().stores.get(1).setState(State.UNDERLOADED);
+			} catch (MissingConfigurationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			// DEBUG
+			
 			List<StoreController> lstOver = getStoreController(State.OVERLOADED);
 			if(lstOver.size() > 0) {
 				List<StoreController> lstNotOver = new ArrayList<StoreController>(getStoreController(State.OVERLOADED));
 				lstNotOver.addAll(getStoreController(State.LOADED));
+				// Check all overloaded store.
 				for(StoreController store : lstOver) {
+					// If there are no overloaded store.
 					if(!lstNotOver.isEmpty()) {
+						// Store to move profile.
 						StoreController store_targ = lstNotOver.get(0);
-						String profilID = getMostItemsProfil(store);
-						if(profilID != null)
-							System.out.println("StoreSupervisor - Profil selected : "+profilID);
+						// Get the bigger profile.
+						Long profilID = store.getMonitor().getProfilMaxItems();
+						if(profilID != null){
+							// Move profile.
+							System.out.println("StoreSupervisor - Profil to move : P"+profilID);
+							try {
+								StoreMaster.getStoreMaster().moveProfil(store, store_targ, profilID);
+								// TODO : Update frequentlyAccessed.
+							} catch (MissingConfigurationException e) {
+
+							}
+						}
 						else
 							System.out.println("StoreSupervisor - No Profil selected");
-						// TODO : profil avec le + d'item
-						// StoreMaster.moveProfil(store, store_targ, "");
 					}
 					else {
 						System.out.println("StoreSupervisor - A Store is overloaded but no store available to move profiles.");
@@ -52,19 +69,13 @@ public class StoreSupervisor implements Runnable {
 	
 	public List<StoreController> getStoreController(State state) {
 		List<StoreController> ret = new ArrayList<StoreController>();
-		for(StoreController storeCntr : StoreMaster.stores) {
-			if(storeCntr.getState() == state)
-				ret.add(storeCntr);
-		}		
+		try {
+			for(StoreController storeCntr : StoreMaster.getStoreMaster().stores) {
+				if(storeCntr.getState() == state)
+					ret.add(storeCntr);
+			}
+		} catch (MissingConfigurationException e) { }		
 		return ret;
-	}
-	
-	public String getMostItemsProfil(StoreController storeCntr) {
-		Long profilID = storeCntr.getMonitor().getProfilMaxItems();
-		if(profilID != -1)
-			return profilID.toString();
-		else
-			return null;
 	}
 	
 	public void stopWork() {

@@ -32,7 +32,7 @@ public class StoreMonitor implements Runnable {
 	}
 	
 	public Long getProfilMaxItems() {
-		Long result = new Long(-1);
+		Long result = null;
 		Long max = new Long(-1);
 		for(Entry<Long, Long> entry : itemIds.entrySet()) {
 		    Long nbItems = entry.getValue();
