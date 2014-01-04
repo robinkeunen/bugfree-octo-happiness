@@ -30,8 +30,7 @@ public class StoreMaster {
 			this.stores.add(new StoreController(kvstore));
 		}
 		
-		this.dispatcher = new MultipleStoreDispatcher();
-		this.dispatcher.setStoreNumber(stores.size());
+		this.dispatcher = new MultipleStoreDispatcher(stores.size());
 	}
 	
 	public static void setKVStores(List<KVStore> stores) {
