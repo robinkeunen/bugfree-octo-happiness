@@ -1,5 +1,6 @@
 package project.master;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class StoreMaster {
 	private static StoreMaster storeMaster;
 	private static List<KVStore> kvstores;
 	
-	private List<StoreController> stores;
+	static List<StoreController> stores;
 	private StoreDispatcher dispatcher;
 	
 	private StoreMaster()  {
@@ -53,26 +54,27 @@ public class StoreMaster {
 		targetStore.doProfileTransaction(profileKey);
 	}
 
-	private void moveProfil(KVStore kv_src, KVStore kv_targ, String profilID) {
+	static void moveProfil(StoreController kv_src, StoreController kv_targ, String profilID) {
 		// Read in StoreA
 		// TODO manipulate StoreController instead of KVStores
 		Key key = Key.createKey(profilID);
-		SortedMap<Key, ValueVersion> profilItems = kv_src.multiGet(key, null, null);
+		SortedMap<Key, ValueVersion> profilItems = kv_src.getStore().multiGet(key, null, null);
 		System.out.println("MOVE - GET ITEMS OF "+profilID+" FROM StoreSrc = "+profilItems.size()+" item(s).");
 		// Write in StoreB
 		for (Map.Entry<Key, ValueVersion> entry : profilItems.entrySet()) {
 			System.out.println("MOVE - MOVE "+entry.getKey().getFullPath()+" from StoreSrc to StoreTarg");
-			kv_targ.put(entry.getKey(), entry.getValue().getValue());
+			kv_targ.getStore().put(entry.getKey(), entry.getValue().getValue());
 		}
 		// Delete in StoreA
 		System.out.println("MOVE - DELETE "+profilID+" from StoreSrc");
 		removeProfil(kv_src, profilID);		
 	}
 	
-	private void removeProfil(KVStore kv, String profilID) {
+	static void removeProfil(StoreController kv, String profilID) {
 		Key key = Key.createKey(profilID);
-		kv.multiDelete(key, null, null);
+		kv.getStore().multiDelete(key, null, null);
 	}
+
 
 	/**
 	 * @param dispatcher the dispatcher to set
@@ -80,9 +82,5 @@ public class StoreMaster {
 	public void setDispatcher(StoreDispatcher dispatcher) {
 		this.dispatcher = dispatcher;
 	}
-
-
-
 	
-
 }

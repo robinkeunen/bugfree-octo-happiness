@@ -5,8 +5,14 @@ import oracle.kv.OperationExecutionException;
 import project.Item;
 
 public class StoreController {
+	public enum State {
+	    UNDERLOADED, LOADED, OVERLOADED 
+	}
+	
 	private KVStore store;
 	private StoreMonitor monitor;
+	
+	private State storeState = State.LOADED;
 
 	public StoreController(KVStore kvstore) {
 		this.store = kvstore;
@@ -27,5 +33,19 @@ public class StoreController {
 		}
 		transaction.execute();
 	}
+	
+	public State getState() {
+		return storeState;
+	}
+	
+	public void setState(State state) {
+		storeState = state;
+	}
 
+	/**
+	 * @return the store
+	 */
+	public KVStore getStore() {
+		return store;
+	}
 }
