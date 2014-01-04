@@ -15,4 +15,10 @@ public class TwoStoreDispatcher extends StoreDispatcher {
 		return (int) (profileKey%2);
 	}
 
+	@Override
+	public void manualMap(Long profileId, int storeIndex) throws UnsupportedException {
+		throw new UnsupportedException("Manual map not supported in TwoStoreDispatcher");
+		
+	}
+
 }
