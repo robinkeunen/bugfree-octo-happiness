@@ -44,7 +44,7 @@ public class MoveItems {
 		}
 	}
 	
-	private void removeAll() {
+	public void removeAll() {
 		for(int i = 1; i <= NB_PROFIL; i++) {
 			// Profil
 			String pdtKey = "P"+i;

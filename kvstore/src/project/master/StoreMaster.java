@@ -9,6 +9,7 @@ import oracle.kv.KVStore;
 import oracle.kv.Key;
 import oracle.kv.OperationExecutionException;
 import oracle.kv.ValueVersion;
+import project.masters.dispatchers.MultipleStoreDispatcher;
 import project.masters.dispatchers.SingleStoreDispatcher;
 import project.masters.dispatchers.StoreDispatcher;
 import project.store.StoreController;
@@ -28,7 +29,7 @@ public class StoreMaster {
 			this.stores.add(new StoreController(kvstore));
 		}
 		
-		this.dispatcher = new SingleStoreDispatcher();
+		this.dispatcher = new MultipleStoreDispatcher();
 		this.dispatcher.setStoreNumber(stores.size());
 	}
 	

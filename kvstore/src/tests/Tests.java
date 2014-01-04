@@ -42,12 +42,11 @@ public class Tests {
 	 */
 	public void step1A() throws MissingConfigurationException {
 		System.out.println("Tests.step1A() ...");
-		
+
 		// setup store master
 		StoreMaster storeMaster = StoreMaster.getStoreMaster();
 		storeMaster.setDispatcher(new SingleStoreDispatcher());
 
-		
 		final int maxClientNumber = 10; 
 
 		// gives the allowed profile targets to the client application (0 to 4)
@@ -61,7 +60,7 @@ public class Tests {
 
 		// ten tests to average
 		for (int testNumber = 1; testNumber <= 10; testNumber++) {
-
+			
 			// for 1..10 client applications
 			for (int clientNumber = 1; clientNumber <= maxClientNumber; clientNumber++) {
 				System.out.println("test " + testNumber + ", " + clientNumber + " clients");
@@ -114,12 +113,14 @@ public class Tests {
 		// setup storeMaster
 		StoreMaster storeMaster = StoreMaster.getStoreMaster();
 		storeMaster.setDispatcher(new TwoStoreDispatcher());
-
+				
 		// setup clients and profile targets
 		final int clientNumber = 10;
 
 		ArrayList<Long> evenTargets = new ArrayList<Long>();
 		ArrayList<Long> oddTargets = new ArrayList<Long>();
+
+
 		for (long profile = 0; profile < clientNumber; profile++) {
 			if (profile%2 == 0)
 				evenTargets.add(profile);
@@ -129,42 +130,51 @@ public class Tests {
 
 		// thread number
 		ExecutorService executor = Executors.newFixedThreadPool(clientNumber);
+		long testSum = 0;
 
-		// List of Futures to catch results
-		List<Future<ClientApplicationResult>> results = new ArrayList<Future<ClientApplicationResult>>();
-		for (int client = 0; client < clientNumber; client++) {
+		for (int test = 1; test <= 10; test++) {
+			System.out.println("test " + test + "...");
+			
+			// List of Futures to catch results
+			List<Future<ClientApplicationResult>> results = new ArrayList<Future<ClientApplicationResult>>();
+			for (int client = 0; client < clientNumber; client++) {
 
-			// Create and launch callables
-			Callable<ClientApplicationResult> app = null;
-			if (client%2 == 0) {
-				app = new ClientApplication(client, evenTargets);
+				// Create and launch callables
+				Callable<ClientApplicationResult> app = null;
+				if (client%2 == 0) {
+					app = new ClientApplication(client, evenTargets);
+				}
+				else {
+					app = new ClientApplication(client, oddTargets);
+				}
+				Future<ClientApplicationResult> submit = executor.submit(app);
+				results.add(submit);
 			}
-			else {
-				app = new ClientApplication(client, oddTargets);
+
+			long sum = 0;
+			// now retrieve the result
+			for (Future<ClientApplicationResult> future : results) {
+				try {
+					sum += future.get().getAverageTransactionTime();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				}
 			}
-			Future<ClientApplicationResult> submit = executor.submit(app);
-			results.add(submit);
+
+			long average = sum/results.size();
+			testSum += average;
+			//System.out.println("  " + clientNumber + " clients");
+			//System.out.println("Average transaction execution time:\n    " + average/1000000L + " ms");
+
 		}
-
-		long sum = 0;
-		// now retrieve the result
-		for (Future<ClientApplicationResult> future : results) {
-			try {
-				sum += future.get().getAverageTransactionTime();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
-		}
-
-		long average = sum/results.size();
-		System.out.println("  " + clientNumber + " clients");
-		System.out.println("Average transaction execution time:\n    " + average/1000000L + " ms");
-
+		long transactionAverageOverTests = testSum / 10;
+		System.out.println("Transaction average over 10 tests: " + transactionAverageOverTests + " ns");
 		executor.shutdown();
 
 		System.out.println("Tests.step1B() ... done");	
+
 	}
 
 }

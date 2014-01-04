@@ -1,15 +1,9 @@
 package project.masters.dispatchers;
 
-import oracle.kv.Key;
-
-public class SingleStoreDispatcher implements StoreDispatcher {
-	private int storeNumber = 1;
+public class SingleStoreDispatcher extends StoreDispatcher {
 	
-	@Override
-	public void setStoreNumber(int storeNumber) {
-		if (storeNumber != 1)
-			System.out.println("SingleStoreDispatcher only allows a single store");
-		this.storeNumber = 1;
+	public SingleStoreDispatcher() {
+		super(1);
 	}
 
 	@Override

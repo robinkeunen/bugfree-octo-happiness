@@ -1,14 +1,16 @@
 package project.masters.dispatchers;
 
-import oracle.kv.Key;
-
 /**
  * Maps keys to store. 
  * @author Robin Keunen
  */
-public interface StoreDispatcher {
-		
-	public void setStoreNumber(int storeNumber);
+public abstract class StoreDispatcher {
+	
+	protected final int storeNumber;
+	
+	public StoreDispatcher(int storeNumber) {
+		this.storeNumber = storeNumber;
+	}
 
-	public int getStoreIndexForKey(Long profileKey);
+	public abstract int getStoreIndexForKey(Long profileKey);
 }
