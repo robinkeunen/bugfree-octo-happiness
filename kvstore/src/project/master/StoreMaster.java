@@ -31,6 +31,8 @@ public class StoreMaster {
 		}
 		
 		this.dispatcher = new MultipleStoreDispatcher(stores.size());
+		
+		new Thread(new StoreSupervisor()).start();
 	}
 	
 	public static void setKVStores(List<KVStore> stores) {
