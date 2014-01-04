@@ -21,7 +21,6 @@ public class StoreMaster {
 	private List<StoreController> stores;
 	private StoreDispatcher dispatcher;
 	
-	
 	private StoreMaster()  {
 		
 		this.stores = new ArrayList<StoreController>();
@@ -31,7 +30,6 @@ public class StoreMaster {
 		
 		this.dispatcher = new SingleStoreDispatcher();
 		this.dispatcher.setStoreNumber(stores.size());
-		
 	}
 	
 	public static void setKVStores(List<KVStore> stores) {
@@ -50,10 +48,6 @@ public class StoreMaster {
 	}
 	
 	public void doProfileTransaction(Long profileKey) throws OperationExecutionException {
-		
-		// TODO remove this fake timer
-		long time = System.currentTimeMillis();
-		while (System.currentTimeMillis() - time < 100) {}
 		
 		StoreController targetStore = stores.get(dispatcher.getStoreIndexForKey(profileKey));
 		targetStore.doProfileTransaction(profileKey);
@@ -78,6 +72,13 @@ public class StoreMaster {
 	private void removeProfil(KVStore kv, String profilID) {
 		Key key = Key.createKey(profilID);
 		kv.multiDelete(key, null, null);
+	}
+
+	/**
+	 * @param dispatcher the dispatcher to set
+	 */
+	public void setDispatcher(StoreDispatcher dispatcher) {
+		this.dispatcher = dispatcher;
 	}
 
 

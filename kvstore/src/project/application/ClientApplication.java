@@ -1,22 +1,23 @@
 package project.application;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
 import oracle.kv.OperationExecutionException;
-import project.ConfigsServer;
 import project.master.MissingConfigurationException;
 import project.master.StoreMaster;
 
 public class ClientApplication implements Callable<ClientApplicationResult> {
 
-	private String name;
+	private long id;
+	private ArrayList<Long> profileTargets;
 	private StoreMaster storeMaster;
 
-	public ClientApplication() {
-		this.name = "";
+	private ClientApplication() {
+		this.id = 0;
+		profileTargets = new ArrayList<Long>();
 		try {
-			StoreMaster.setKVStores(ConfigsServer.getServersStores());
 			this.storeMaster = StoreMaster.getStoreMaster();
 
 		} catch (MissingConfigurationException e) {
@@ -24,15 +25,14 @@ public class ClientApplication implements Callable<ClientApplicationResult> {
 		}
 	}
 
-	public ClientApplication(String name) {
+	public ClientApplication(long id, ArrayList<Long> profileTargets) {
 		this();
-		this.name = name;
+		this.profileTargets = profileTargets;
+		this.id = id;
 	}
 
 	@Override
 	public ClientApplicationResult call() throws Exception {
-
-		System.out.println("  ClientApplication " + this.name + " go...");
 
 		Random random = new Random();
 
@@ -44,7 +44,8 @@ public class ClientApplication implements Callable<ClientApplicationResult> {
 		long profileId = 0;
 
 		while (System.nanoTime() - startTime < tenSeconds) {
-			profileId = (long) random.nextInt(5);
+			int randIndex = random.nextInt(profileTargets.size());
+			profileId = profileTargets.get(randIndex);
 			try {
 				storeMaster.doProfileTransaction(profileId);
 			} catch (OperationExecutionException e) {
@@ -60,7 +61,6 @@ public class ClientApplication implements Callable<ClientApplicationResult> {
 		//System.out.println("    " + this.name + " Total execution time: " + executionTime / 1000000L + " ms.");
 		//System.out.println("    " + this.name + " Average execution time: " + (executionTime/iterations) + " ns = " + (executionTime/iterations) / 1000000L + " ms");
 
-		System.out.println("  ClientApplication " + this.name + " go... done");
 		return result;
 	}
 
