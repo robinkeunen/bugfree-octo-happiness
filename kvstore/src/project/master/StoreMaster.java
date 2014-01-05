@@ -9,6 +9,7 @@ import oracle.kv.KVStore;
 import oracle.kv.Key;
 import oracle.kv.OperationExecutionException;
 import oracle.kv.ValueVersion;
+import oracle.kv.impl.util.KVThreadFactory;
 import project.masters.dispatchers.MultipleStoreDispatcher;
 import project.masters.dispatchers.StoreDispatcher;
 import project.masters.dispatchers.UnsupportedException;
@@ -64,6 +65,7 @@ public class StoreMaster {
 	}
 
 	void moveProfil(StoreController kv_src, StoreController kv_targ, Long profileID) {
+		System.out.println("from " + kv_src.getName() + " to " + kv_targ.getName());
 		// Notify dispatcher.
 		try {
 			this.dispatcher.manualMap(profileID, getStoreIndex(kv_targ));
