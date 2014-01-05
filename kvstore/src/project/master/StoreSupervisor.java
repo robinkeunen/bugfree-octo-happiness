@@ -56,7 +56,7 @@ public class StoreSupervisor implements Runnable {
 					}
 				}				
 			}
-			System.out.println("StoreSupervisor - Sleep");
+			//System.out.println("StoreSupervisor - Sleep");
 		    try { Thread.sleep(SUPERVISOR_INTERVAL); }
 		    catch (InterruptedException e) {}
 		}

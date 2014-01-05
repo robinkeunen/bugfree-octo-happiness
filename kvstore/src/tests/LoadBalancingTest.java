@@ -91,6 +91,7 @@ public class LoadBalancingTest {
 			System.out.println(prefix + "min latency " + transactionMetrics.getMinLatencyMs() + " ms");
 			System.out.println(prefix + "avg latency " + transactionMetrics.getAverageLatencyMs() + " ms");
 			System.out.println(prefix + "max latency " + transactionMetrics.getMaxLatencyMs() + " ms");
+			System.out.println(prefix + "filtered latency " + transactionMetrics.getFilteredLatency() + " ms");
 			System.out.println();
 			index++;
 		}

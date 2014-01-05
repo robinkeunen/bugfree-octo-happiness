@@ -10,11 +10,15 @@ public class TransactionMetrics implements OperationMetrics {
 	private int totalRequests;
 	private int totalOps;
 	
+	static final float FILTER_FACTOR = (float) 0.95;
+	private float filteredLatency;
+	
 	public TransactionMetrics() {
 		this.averageLatencyMs = -1;
 		this.maxLatencyMs = -1;
 		this.minLatencyMs = Integer.MAX_VALUE;
 		this.totalRequests = 0;
+		this.filteredLatency = 0;
 	}
 	
 	public void update(int latency, int nbOperations) {
@@ -26,7 +30,10 @@ public class TransactionMetrics implements OperationMetrics {
 		if (latency > maxLatencyMs)
 			maxLatencyMs = latency;
 		
-		averageLatencyMs = (averageLatencyMs * (totalRequests - 1) + latency) / totalRequests;
+		averageLatencyMs = ((averageLatencyMs * (totalRequests - 1)) + latency) / totalRequests;
+		
+		// Exponential 'smoothing' filter
+		filteredLatency = FILTER_FACTOR * filteredLatency + (1 - FILTER_FACTOR) * latency;
 	}
 
 	@Override
@@ -57,6 +64,13 @@ public class TransactionMetrics implements OperationMetrics {
 	@Override
 	public int getTotalRequests() {
 		return totalRequests;
+	}
+
+	/**
+	 * @return the filteredLatency
+	 */
+	public float getFilteredLatency() {
+		return filteredLatency;
 	}
 
 }

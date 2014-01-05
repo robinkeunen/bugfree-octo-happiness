@@ -1,5 +1,8 @@
 package project.store;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,13 +17,16 @@ import project.store.StoreController.State;
 
 public class StoreMonitor implements Runnable {
 	
-	private static long SUPERVISOR_INTERVAL = 1000;
+	private static long SUPERVISOR_INTERVAL = 100;
 	private final KVStore store;
 	HashMap<Long, Long> itemIds;
 	private boolean keepRunning;
 	private List<Long> frequentlyAccessed;
 	private TransactionMetrics transactionMetrics;
 	private String name;
+	
+	private PrintWriter logger;
+
 
 	public StoreMonitor(KVStore store, String name) {
 		
@@ -66,8 +72,15 @@ public class StoreMonitor implements Runnable {
 	@Override
 	public void run() {
 		
+		try {
+			this.logger = new PrintWriter(name + "_" +
+					"f" + TransactionMetrics.FILTER_FACTOR + ".txt", "UTF-8");
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
 		while(isKeepRunning()) {
-			System.out.println("StoreMonitor");
+			//System.out.println("StoreMonitor");
 			
 			//String prefix = "  " + name + " - " + transactionMetrics.getOperationName() + " - ";
 			//System.out.println(prefix + transactionMetrics.getTotalRequests() + " requets");
@@ -75,11 +88,15 @@ public class StoreMonitor implements Runnable {
 			//System.out.println(prefix + "min latency " + transactionMetrics.getMinLatencyMs() + " ms");
 			//System.out.println(prefix + "avg latency " + transactionMetrics.getAverageLatencyMs() + " ms");
 			//System.out.println(prefix + "max latency " + transactionMetrics.getMaxLatencyMs() + " ms");
-					
+			
+			logger.println(transactionMetrics.getFilteredLatency());
+			
 		    try { Thread.sleep(SUPERVISOR_INTERVAL); }
 		    catch (InterruptedException e) {}
 		}
-
+		
+		logger.close();
+		
 	}
 
 	public void updateTransactionMetrics(int latencyMs, int nbOperations) {

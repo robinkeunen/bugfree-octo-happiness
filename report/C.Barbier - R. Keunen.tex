@@ -164,6 +164,24 @@ Le code se trouve dans le projet kvstore dans les packages \verb tme1.ex1  et \v
 \subsection*{étape 1 b}
 75695802
 
+\subsection*{Etape 2}
+Le déplacement d'un profil Px d'un store Si à un store Sj n'est pas une opération atomique par définition. 
+
+Imaginons un fonction moveProfil prenant en paramêtre un store source (Si), un store cible (Sj) et l'identifiant du profil à déplacer (Px). Cette fonction est une transaction qui fait éxécute une suite d'opérations :
+- Lire le profil Px sur Si.
+- Copier le profil Px sur Sj.
+- Supprimer le profil Px sur Si.
+
+On ne peut pas se permettre de vérouiller l'accès à un profil durant le déplacement (généralement d'une longue durée) car celà altérerait trop les performances.
+
+Celà implique que le profil Px, en cours de déplacement, peut être sollicité par des applications clientes pour des lectures, modifications, ajouts d'objets au profil ce qui peut occassioner des problêmes de consistence des données.
+ 
+Il faut à tout moment (même pendant le déplacement) être capable de :
+- Accéder à la dernière version du Profil Px et ses objets.
+- Modifier les profils sans que ces modifications soient perdues durant le déplacement.
+- Insérer de nouveaux objets dans le profil Px tout en assurant la validité et l'unicité des clés crées.
+
+
 \appendix
 
 \begin{table}
