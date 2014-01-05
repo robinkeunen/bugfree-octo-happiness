@@ -16,7 +16,7 @@ public class StoreMonitor implements Runnable {
 	private boolean keepRunning;
 	private TransactionMetrics transactionMetrics;
 	private String name;
-	
+	 
 	private PrintWriter logger;
 
 

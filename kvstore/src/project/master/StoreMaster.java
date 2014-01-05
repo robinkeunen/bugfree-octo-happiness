@@ -17,7 +17,7 @@ import project.store.StoreController;
 import project.store.TransactionMetrics;
 
 public class StoreMaster {
-	// Singleton instance
+	// Singleton instance 
 	private static StoreMaster storeMaster;
 	private static List<KVStore> kvstores;
 	

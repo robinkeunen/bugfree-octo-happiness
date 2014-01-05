@@ -82,7 +82,7 @@ public class StoreController {
 		Key key = Key.createKey("P"+profileID.toString());
 		this.store.multiDelete(key, null, null);
 	}
-	
+	 
 	public void putProfile(Long profileID, SortedMap<Key, ValueVersion> profilItems) throws OperationExecutionException {
 		ProfileTransaction transaction = new ProfileTransaction(store, profileID);
 		for (Map.Entry<Key, ValueVersion> entry : profilItems.entrySet()) {
