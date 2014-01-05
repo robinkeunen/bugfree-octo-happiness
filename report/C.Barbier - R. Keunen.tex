@@ -68,8 +68,8 @@
 {\rule{\larg}{1mm}}
 \vspace{2mm} \\
 \begin{tabular}{p{10cm} r}
-   & {\large \bf NI??? - ABDR-1} \\
-   &{\large \bf \bsc{Hubert Naackle ???}}\\
+   & {\large \bf NI401 - ABDR} \\
+   &{\large \bf \bsc{Hubert Naacke}}\\
    & {\large  \today}
 \end{tabular}\\
 \vspace{10cm}
@@ -78,10 +78,13 @@
 \bsc{Robin Keunen}\\
 3303515\\
 \bsc{Clément Barbier}\\
-xxxxxxx
+3061254
 \end{tabular}\\
 \hline }
 \date{}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
 
 \begin{document}
 
@@ -94,8 +97,8 @@ xxxxxxx
 \pagestyle{fancy}
 \lhead{}
 \chead{}
-\rhead{\itshape \textcolor{gris}{Banded Iron Formation}}
-\lfoot{\itshape \textcolor{gris}{\'Elements de paléontologie}}
+\rhead{\itshape \textcolor{gris}{Equilibrage de charges sur KVstores}}
+\lfoot{\itshape \textcolor{gris}{Administration de bases de données réparties}}
 \cfoot{}
 \rfoot{\itshape \textcolor{gris}{\thepage}}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -103,22 +106,83 @@ xxxxxxx
 
 \newpage 
 
+\begin{figure}
+    \begin{tikzpicture} 
+        \pgfplotsset{width=9cm}
+        \begin{axis}[
+            width=\textwidth - 0.5cm,
+            height=6cm,
+            title={Latence filtrée sur les stores ($f=0.95$)},
+            xlabel={Temps (ms)},
+            ylabel={Latence filtrée (ms)},
+            legend entries={$f=0.7$ ,$f=0.9$,$f=0.95$, $f=0.99$},
+        ]
+            
+            \addplot [color=green, mark=none] table {./graphs/store 1_f0.7.txt};
+            \addplot [color=red, mark=none] table {./graphs/store 1_f0.9.txt};
+            \addplot [color=blue, mark=none, line width = 1pt] table {./graphs/store 1_f0.95.txt};
+            \addplot [color=black, mark=none] table {./graphs/store 1_f0.99.txt};
+        
+        \end{axis}
+    \end{tikzpicture}
+
+    \caption{
+        Latence filtrée sur les stores 1, 3 et 5. 
+        Les stores 1 à 4 subissent une charge de 15 applications. 
+        Le store 1 subit la charge additionnelle de 5 applications. 
+        Pas de balance de la charge.
+        }
+            
+    \label{filter_factor}
+\end{figure}
+
+\begin{figure}
+    \begin{tikzpicture} 
+        \pgfplotsset{width=9cm}
+        \begin{axis}[
+            width=\textwidth - 0.5cm,
+            height=6cm,
+            title={Latence filtrée sur les stores ($f=0.95$)},
+            xlabel={Temps (ms)},
+            ylabel={Latence filtrée (ms)},
+            legend entries={store 1, store 3, store 5},
+        ]
+            
+            \addplot [color=blue, mark=none] table {./graphs/store 1_f0.95.txt};
+            \addplot [color=red, mark=none] table {./graphs/store 3_f0.95.txt};
+            \addplot [color=green, mark=none] table {./graphs/store 5_f0.95.txt};
+        
+        \end{axis}
+    \end{tikzpicture}
+
+    \caption{
+        Latence filtrée sur les stores 1, 3 et 5. 
+        Les stores 1 à 4 subissent une charge de 10 applications. 
+        Le store 1 subit la charge additionnelle de 10 applications. 
+        Pas de balance de la charge.
+        }
+            
+    \label{stores_nobalancing}
+\end{figure}
+
+
 \section{Transaction et concurrence}
 Cette section présente la solution du tme KVStore.
 Le code se trouve dans le projet kvstore dans les packages \verb tme1.ex1  et \verb tme1.ex2 .
 
 \subsection*{Exercice 1}
     La classe \verb init  permet d'initialiser le store afin d'obtenir des résultats reproductibles.
-\subsubsection*{A1}
+
+\paragraph*{A1}
     Dans cet exercice, nous ne devions pas tenir compte des accès concurrents au données. 
     Le programme lit simplement la valeur stockée à la clé $P1$, incrémente ce qu'il a lu et l'écrit à la clé $P1$.
     Cette solution n'est plus viable dès que deux programmes manipulent la même donnée simultanément.
     En effet, si les programmes $a$ et $b$ lisent $n$ simultanément, ils écriront chacun $n + 1$ en base alors que la valeur aurait du être incrémentée deux fois.
     La valeur finale devrait être $n+2$.
     
-    Ce résultat est montré par l'expérience: en lançant deux programmes \verb A1  qui lisent et incrémentent 1000 fois la valeur stockée à P1, on obtient une valeur finale en $P1$ de 1261, 1269 et 1289 au lieu de 2000.
+    Ce résultat est montré par l'expérience: en lançant deux programmes \verb A1  qui lisent et incrémentent 1000 fois la valeur stockée à P1, on obtient une valeur finale en $P1$ de 1261, 1269 et 1289 (3 exécutions consécutives)  au lieu de 2000.
 
-\subsubsection*{A2}
+\paragraph*{A2}
     Dans \verb A2 , le programme vérifie si la valeur stockée en base est fraiche avant d'écrire.
     On vérifie la fraicheur grace à la fonction \verb putIfVersion .
     Cette fonction n'écrit en base que si la version de la donnée en base correspond à la version de la donnée que nous y avions lue.
@@ -128,12 +192,12 @@ Le code se trouve dans le projet kvstore dans les packages \verb tme1.ex1  et \v
     
 \subsection*{Exercice 2}
 
-\subsubsection*{M1}
+\paragraph*{M1}
     Ce programme est identique à \verb A2 , il lit les valeurs de $P0$ à $P4$ en base, les incrémente et les écrit en base.
     Si on vérifie la fraicheur des données avant de réécrire, il n'y aura pas de problème de cohérence de données.
     En effet, vu que les données écrites (de  $P0$ à $P4$) sont indépendantes les unes des autres, l'ordre d'écriture de deux programmes n'affecte pas la valeur des données finales. 
 
-\subsubsection*{M2}
+\paragraph*{M2}
     En exécutant deux programmes \verb M2  en série, on obtient une valeur finale de 2000.
     En exécutant deux programmes \verb M2  en parallèle, les résultats divergent, on obtient par exemple lors de 3 expériences consécutives: 2054, 2056 et 2044.
     
@@ -147,19 +211,37 @@ Le code se trouve dans le projet kvstore dans les packages \verb tme1.ex1  et \v
 \subsubsection*{Transactions}
 
 
-\section*{Transactions et équilibrage de charge}
+\section*{Equilibrage de charges sur plusieurs KVStores}
 
 \subsection*{étape 1 a}
-1 clients: 3120080
-2 clients: 4293081
-3 clients: 5785398
-4 clients: 8064602
-5 clients: 9099661
-6 clients: 10813041
-7 clients: 13126199
-8 clients: 16086278
-9 clients: 18252757
-10 clients: 20314303
+
+\begin{figure}
+    \begin{tikzpicture} 
+        \pgfplotsset{width=9cm}
+        \begin{axis}[
+            width=\textwidth - 0.5cm,
+            height=6cm,
+            title={Latence filtrée sur les stores ($f=0.95$)},
+            xlabel={Temps (ms)},
+            ylabel={Latence filtrée (ms)},
+            legend entries={store 1},
+        ]
+            
+            \addplot [color=blue, mark=none] table {./graphs/step1.dat};
+                    
+        \end{axis}
+    \end{tikzpicture}
+
+    \caption{
+        Latence filtrée sur les stores 1, 3 et 5. 
+        Les stores 1 à 4 subissent une charge de 15 applications. 
+        Le store 1 subit la charge additionnelle de 5 applications. 
+        Pas de balance de la charge.
+        }
+            
+    \label{stores_nobalancing}
+\end{figure}
+
 
 \subsection*{étape 1 b}
 75695802
@@ -189,7 +271,7 @@ Il faut à tout moment (même pendant le déplacement) être capable de :
 \caption{Exemple d'exécution de  M2  sans le mécanisme des transactions.
 Le programme $a$ est interrompu avant sa dernière écriture. 
 $a$ recommence l'itération lecture/écriture.
-Au final, les valeurs sont incrémentées deux fois lors de cette itération.
+Au final, les valeurs sont incrémentées deux fois lors d'une seule itération.
 }
 
 \begin{center}
@@ -232,7 +314,7 @@ write(P4, 74) !! & \tabularnewline
 \hline 
 read(P0..4) = 75 & \tabularnewline
 \hline 
-write(P0..4, 75) & \tabularnewline
+write(P0..4, 76) & \tabularnewline
 \hline 
 \end{tabular}
 \end{center}

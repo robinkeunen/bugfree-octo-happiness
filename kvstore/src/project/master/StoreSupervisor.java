@@ -47,7 +47,7 @@ public class StoreSupervisor implements Runnable {
 				System.out.println("MEAN = "+mean+" | STD_DEV = "+deviation);
 				for(StoreController storeCntr : StoreMaster.getStoreMaster().stores) {
 					float latency = storeCntr.getMonitor().getTransactionMetrics().getFilteredLatency();
-					if(latency > mean + deviation)
+					if(latency > mean + deviation && latency > 100)
 						storeCntr.setState(State.OVERLOADED);
 					else if(latency < mean - deviation)
 						storeCntr.setState(State.UNDERLOADED);
@@ -88,7 +88,7 @@ public class StoreSupervisor implements Runnable {
 					break;
 				}				
 			}
-			//System.out.println("StoreSupervisor - Sleep");
+			System.out.println("StoreSupervisor - Sleep");
 		    try { Thread.sleep(SUPERVISOR_INTERVAL); }
 		    catch (InterruptedException e) {}
 		}

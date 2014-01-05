@@ -37,7 +37,8 @@ public class LoadBalancingTest {
 		// targets for app with uniform profile distribution
 		ArrayList<Long> uniformTargets = new ArrayList<Long>();
 		for (long ut = 0; ut < 20; ut++)
-			uniformTargets.add(ut);
+			if (ut%5 != 4)
+				uniformTargets.add(ut);
 		
 		// targets on specific profiles
 		ArrayList<Long> specificTargets = new ArrayList<Long>();

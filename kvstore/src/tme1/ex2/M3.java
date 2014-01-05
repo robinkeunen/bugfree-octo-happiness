@@ -1,17 +1,13 @@
 package tme1.ex2;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
 import oracle.kv.KVStoreFactory;
 import oracle.kv.Key;
-import oracle.kv.Operation;
 import oracle.kv.OperationExecutionException;
-import oracle.kv.OperationFactory;
-import oracle.kv.ReturnValueVersion;
 import oracle.kv.Value;
 import oracle.kv.ValueVersion;
 

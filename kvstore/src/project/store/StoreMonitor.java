@@ -5,17 +5,15 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
+
 import oracle.kv.KVStore;
 
 public class StoreMonitor implements Runnable {
 	
 	private static long SUPERVISOR_INTERVAL = 100;
-	private final KVStore store;
 	HashMap<Long, Long> itemIds;
 	private boolean keepRunning;
-	private List<Long> frequentlyAccessed;
 	private TransactionMetrics transactionMetrics;
 	private String name;
 	
@@ -24,14 +22,13 @@ public class StoreMonitor implements Runnable {
 
 	public StoreMonitor(KVStore store, String name) {
 		
-		this.store = store;
 		this.name = name;
 		this.transactionMetrics = new TransactionMetrics();
 		this.setKeepRunning(true);
 		
 		// TODO initiate parameters from store
 		this.itemIds = new HashMap<Long, Long>();
-		this.frequentlyAccessed = new ArrayList<>(5);
+		new ArrayList<>(5);
 	}
 	
 	public long getMaxId(long profile) {
@@ -73,16 +70,13 @@ public class StoreMonitor implements Runnable {
 			e.printStackTrace();
 		}
 		
-		while(isKeepRunning()) {
-			//System.out.println("StoreMonitor");
-			
-			//String prefix = "  " + name + " - " + transactionMetrics.getOperationName() + " - ";
-			//System.out.println(prefix + transactionMetrics.getTotalRequests() + " requets");
-			//System.out.println(prefix + transactionMetrics.getTotalOps() + " operations");
-			//System.out.println(prefix + "min latency " + transactionMetrics.getMinLatencyMs() + " ms");
-			//System.out.println(prefix + "avg latency " + transactionMetrics.getAverageLatencyMs() + " ms");
-			//System.out.println(prefix + "max latency " + transactionMetrics.getMaxLatencyMs() + " ms");
+		logger.println("time\tlatency");
+		long start = System.currentTimeMillis();
 		
+		while(isKeepRunning()) {
+			
+			long t = System.currentTimeMillis();
+			logger.print(t - start + "\t");
 			logger.println(transactionMetrics.getFilteredLatency());
 			
 		    try { Thread.sleep(SUPERVISOR_INTERVAL); }
