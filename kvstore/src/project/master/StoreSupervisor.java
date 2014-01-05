@@ -47,7 +47,7 @@ public class StoreSupervisor implements Runnable {
 				System.out.println("MEAN = "+mean+" | STD_DEV = "+deviation);
 				for(StoreController storeCntr : StoreMaster.getStoreMaster().stores) {
 					float latency = storeCntr.getMonitor().getTransactionMetrics().getFilteredLatency();
-					if(latency > mean + deviation && latency > 100)
+					if(latency > mean + deviation && latency > 40)
 						storeCntr.setState(State.OVERLOADED);
 					else if(latency < mean - deviation)
 						storeCntr.setState(State.UNDERLOADED);

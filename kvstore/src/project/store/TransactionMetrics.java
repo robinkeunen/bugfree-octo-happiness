@@ -10,7 +10,7 @@ public class TransactionMetrics implements OperationMetrics {
 	private int totalRequests;
 	private int totalOps;
 	
-	static final float FILTER_FACTOR = (float) 0.99;
+	static final float FILTER_FACTOR = (float) 0.95;
 	private float filteredLatency;
 	
 	public TransactionMetrics() {

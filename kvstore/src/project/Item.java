@@ -10,6 +10,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Random;
 
+/**
+ * Item  modélise l'objet à ajouter à la base.
+ * Il contient cinq champs numériques et cinq champs \verb String .
+ */
 public class Item implements Serializable {
 
 	/**
@@ -20,7 +24,7 @@ public class Item implements Serializable {
 	public Item() {
 		this.itemId = 0;
 	}
-	
+
 	private long itemId;
 
 	private int intField1;
@@ -47,11 +51,11 @@ public class Item implements Serializable {
 		item.setIntField4(random.nextInt());
 		item.setIntField5(random.nextInt());
 
-		item.setStringField1(Utils.randomWord(10));
-		item.setStringField2(Utils.randomWord(10));
-		item.setStringField3(Utils.randomWord(10));
-		item.setStringField4(Utils.randomWord(10));
-		item.setStringField5(Utils.randomWord(10));
+		item.setStringField1(randomWord(10));
+		item.setStringField2(randomWord(10));
+		item.setStringField3(randomWord(10));
+		item.setStringField4(randomWord(10));
+		item.setStringField5(randomWord(10));
 
 		return item;
 	}
@@ -96,7 +100,7 @@ public class Item implements Serializable {
 		}
 		return bytes;
 	}
-	
+
 	/**
 	 * 
 	 * @param bytes
@@ -105,26 +109,26 @@ public class Item implements Serializable {
 	 * @throws ClassNotFoundException if the byte array did not represent a known class.
 	 */
 	public static Item fromByteArray(byte[] bytes) throws IOException, ClassNotFoundException {
-		
+
 		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 		ObjectInput in = null;
 		Item item = null;
 		try {
-		  in = new ObjectInputStream(bis);
-		  item = (Item) in.readObject(); 
+			in = new ObjectInputStream(bis);
+			item = (Item) in.readObject(); 
 		} finally {
-		  try {
-		    bis.close();
-		  } catch (IOException ex) {
-		    // ignore close exception
-		  }
-		  try {
-		    if (in != null) {
-		      in.close();
-		    }
-		  } catch (IOException ex) {
-		    // ignore close exception
-		  }
+			try {
+				bis.close();
+			} catch (IOException ex) {
+				// ignore close exception
+			}
+			try {
+				if (in != null) {
+					in.close();
+				}
+			} catch (IOException ex) {
+				// ignore close exception
+			}
 		}
 		return item;
 	}
@@ -254,9 +258,22 @@ public class Item implements Serializable {
 	public long getItemId() {
 		return this.itemId;
 	}	
-	
+
 	public void setItemId(long id) {
 		this.itemId = id;
 	}	
+
+	public static String randomWord(int maxWordLength)
+	{
+		Random random = new Random();
+		char[] word = new char[random.nextInt(maxWordLength)+3]; // words of length 3 through 10. (1 and 2 letter words are boring.)
+		for(int j = 0; j < word.length; j++)
+		{
+			word[j] = (char)('a' + random.nextInt(26));
+		}
+
+		return new String(word);
+	}
+
 
 }

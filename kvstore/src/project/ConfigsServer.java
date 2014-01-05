@@ -6,6 +6,11 @@ import java.util.List;
 
 import oracle.kv.KVStore;
 
+/**
+ * ConfigsServer  mémorise les paramètres correspondant aux serveurs
+ * lancés par le script fourni avec le projet.
+ *
+ */
 public class ConfigsServer {
 	private final static List<ServerParameters> lstServer = Arrays.asList(
 				new ServerParameters("store1", "localhost", "5000"),
