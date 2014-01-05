@@ -8,11 +8,11 @@ import oracle.kv.KVStore;
 
 public class ConfigsServer {
 	private final static List<ServerParameters> lstServer = Arrays.asList(
-				new ServerParameters("store1", "127.0.0.1", "5000"),
-				new ServerParameters("store2", "127.0.0.1", "5020"),
-				new ServerParameters("store3", "127.0.0.1", "5030"),
-				new ServerParameters("store4", "127.0.0.1", "5040"),
-				new ServerParameters("store5", "127.0.0.1", "5050")
+				new ServerParameters("store1", "localhost", "5000"),
+				new ServerParameters("store2", "localhost", "5020"),
+				new ServerParameters("store3", "localhost", "5040"),
+				new ServerParameters("store4", "localhost", "5060"),
+				new ServerParameters("store5", "localhost", "5080")
 			);
 	
 	public static List<KVStore> getServersStores() {

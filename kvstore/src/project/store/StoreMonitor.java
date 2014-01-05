@@ -8,12 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+
 import oracle.kv.KVStore;
-import oracle.kv.stats.KVStats;
-import oracle.kv.stats.OperationMetrics;
-import project.Utils;
+import project.master.MissingConfigurationException;
 import project.master.StoreMaster;
-import project.store.StoreController.State;
 
 public class StoreMonitor implements Runnable {
 	
@@ -91,8 +90,33 @@ public class StoreMonitor implements Runnable {
 			//System.out.println(prefix + "min latency " + transactionMetrics.getMinLatencyMs() + " ms");
 			//System.out.println(prefix + "avg latency " + transactionMetrics.getAverageLatencyMs() + " ms");
 			//System.out.println(prefix + "max latency " + transactionMetrics.getMaxLatencyMs() + " ms");
+<<<<<<< HEAD
 			long t = System.currentTimeMillis();
 			logger.print(t - start + "\t");
+=======
+			
+			try {
+				List<TransactionMetrics> metrics = StoreMaster.getStoreMaster().getTransactionMetrics();
+				float cumul = 0;
+				double[] values = new double[metrics.size()];
+				int nbVal = 0;
+				for(TransactionMetrics metric : metrics) {
+					values[nbVal] = metric.getFilteredLatency();
+					cumul += values[nbVal++];
+				}
+				float average = cumul/(float)nbVal;
+				cumul = 0;
+				for(int i = 0; i < values.length; i++) {
+					cumul += java.lang.Math.pow((values[i] - average), (float)2.0);
+				}				
+				double mean = java.lang.Math.sqrt(cumul/(float)nbVal);
+				StandardDeviation stdDev = new StandardDeviation();
+				double deviation = stdDev.evaluate(values, mean);
+				System.out.println("MEAN = "+mean+" | STD_DEV = "+deviation);
+			} catch (MissingConfigurationException e1) {
+				// TODO Auto-generated catch block
+			}
+>>>>>>> d0d425e8e3918e41f7a1ff4e9657a646f2c7df3d
 			logger.println(transactionMetrics.getFilteredLatency());
 			
 		    try { Thread.sleep(SUPERVISOR_INTERVAL); }
