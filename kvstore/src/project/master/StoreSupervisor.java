@@ -15,7 +15,7 @@ public class StoreSupervisor implements Runnable {
 		this.setKeepRunning(false);
 		try {
 			for(StoreController storeCntr : StoreMaster.getStoreMaster().stores) {
-				//storeCntr.getMonitor().stop();
+				storeCntr.getMonitor().setKeepRunning(false);
 			}
 		} catch (MissingConfigurationException e) { }		
 	}
@@ -46,6 +46,10 @@ public class StoreSupervisor implements Runnable {
 							} catch (MissingConfigurationException e) {
 
 							}
+							// Change store destination if current is overloaded.
+							if(store_targ.getState()==State.OVERLOADED) {
+								lstNotOver.remove(store_targ);
+							}	
 						}
 						else
 							System.out.println("StoreSupervisor - No Profil selected");
