@@ -16,7 +16,7 @@ import project.store.StoreController;
 import project.store.TransactionMetrics;
 
 public class StoreMaster {
-	// Singleton instance
+	// Singleton instance 
 	private static StoreMaster storeMaster;
 	private static List<KVStore> kvstores;
 	
@@ -74,7 +74,11 @@ public class StoreMaster {
 		// Read in Store source.		
 		SortedMap<Key, ValueVersion> profilItems = kv_src.getProfile(profileID);
 		// Write in Store target.
-		kv_targ.putProfile(profilItems);
+		try {
+			kv_targ.putProfile(profileID, profilItems);
+		} catch (OperationExecutionException e) {
+			return;
+		}
 		// Delete in Store source.
 		kv_src.removeProfile(profileID);		
 	}

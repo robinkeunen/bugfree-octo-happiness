@@ -82,11 +82,14 @@ public class StoreController {
 		Key key = Key.createKey("P"+profileID.toString());
 		this.store.multiDelete(key, null, null);
 	}
-	
-	public void putProfile(SortedMap<Key, ValueVersion> profilItems) {
+	 
+	public void putProfile(Long profileID, SortedMap<Key, ValueVersion> profilItems) throws OperationExecutionException {
+		ProfileTransaction transaction = new ProfileTransaction(store, profileID);
 		for (Map.Entry<Key, ValueVersion> entry : profilItems.entrySet()) {
-			this.store.put(entry.getKey(), entry.getValue().getValue());
+			transaction.addPutOperation(entry.getKey(), entry.getValue().getValue());
 		}
+		transaction.execute();
+		transaction.accept(this.monitor);
 	}
 
 	public TransactionMetrics getTransactionMetrics() {

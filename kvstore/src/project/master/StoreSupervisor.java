@@ -67,7 +67,7 @@ public class StoreSupervisor implements Runnable {
 				if(!lstNotOver.isEmpty()) {
 					// Store to move profile.
 					StoreController store_targ = lstNotOver.get(0);
-					// Get the bigger profile.
+					// Get the bigger profile. 
 					Long profilID = store.getMonitor().getProfilMaxItems();
 					if(profilID != null){
 						// Move profile.
