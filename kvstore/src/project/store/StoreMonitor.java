@@ -67,7 +67,7 @@ public class StoreMonitor implements Runnable {
 	public void run() {
 		
 		while(isKeepRunning()) {
-			//System.out.println("StoreMonitor");
+			System.out.println("StoreMonitor");
 			
 			//String prefix = "  " + name + " - " + transactionMetrics.getOperationName() + " - ";
 			//System.out.println(prefix + transactionMetrics.getTotalRequests() + " requets");

@@ -1,12 +1,8 @@
 package project.master;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import oracle.kv.Direction;
-import oracle.kv.KeyValueVersion;
-import oracle.kv.Value;
 import project.store.StoreController;
 import project.store.StoreController.State;
 
@@ -15,21 +11,19 @@ public class StoreSupervisor implements Runnable {
 	private boolean keepRunning = true;
 	private static int SUPERVISOR_INTERVAL = 1000; 
 	
+	public void stop() {
+		this.setKeepRunning(false);
+		try {
+			for(StoreController storeCntr : StoreMaster.getStoreMaster().stores) {
+				//storeCntr.getMonitor().stop();
+			}
+		} catch (MissingConfigurationException e) { }		
+	}
+	
 	@Override
 	public void run() {
-		while(keepRunning) {
+		while(isKeepRunning()) {
 			System.out.println("StoreSupervisor - Start");
-			
-			// DEBUG
-			try {
-				StoreMaster.getStoreMaster().stores.get(0).setState(State.OVERLOADED);
-				StoreMaster.getStoreMaster().stores.get(1).setState(State.UNDERLOADED);
-			} catch (MissingConfigurationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			// DEBUG
-			
 			List<StoreController> lstOver = getStoreController(State.OVERLOADED);
 			if(lstOver.size() > 0) {
 				List<StoreController> lstNotOver = new ArrayList<StoreController>(getStoreController(State.OVERLOADED));
@@ -44,9 +38,10 @@ public class StoreSupervisor implements Runnable {
 						Long profilID = store.getMonitor().getProfilMaxItems();
 						if(profilID != null){
 							// Move profile.
-							System.out.println("StoreSupervisor - Profil to move : P"+profilID);
 							try {
+								System.out.println("StoreSupervisor - Profil to move : P"+profilID);
 								StoreMaster.getStoreMaster().moveProfil(store, store_targ, profilID);
+								System.out.println("StoreSupervisor - Profil moved");
 								// TODO : Update frequentlyAccessed.
 							} catch (MissingConfigurationException e) {
 
@@ -77,9 +72,12 @@ public class StoreSupervisor implements Runnable {
 		} catch (MissingConfigurationException e) { }		
 		return ret;
 	}
-	
-	public void stopWork() {
-		this.keepRunning = false;
+
+	public boolean isKeepRunning() {
+		return keepRunning;
 	}
 
+	public void setKeepRunning(boolean keepRunning) {
+		this.keepRunning = keepRunning;
+	}
 }

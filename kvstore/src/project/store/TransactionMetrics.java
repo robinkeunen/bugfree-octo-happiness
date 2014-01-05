@@ -31,7 +31,6 @@ public class TransactionMetrics implements OperationMetrics {
 
 	@Override
 	public float getAverageLatencyMs() {
-		// TODO Auto-generated method stub
 		return averageLatencyMs;
 	}
 

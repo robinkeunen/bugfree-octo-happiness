@@ -1,8 +1,13 @@
 package project.store;
 
+import java.util.Map;
+import java.util.SortedMap;
+
 import oracle.kv.KVStore;
+import oracle.kv.Key;
 import oracle.kv.OperationExecutionException;
 import project.Item;
+import oracle.kv.ValueVersion;
 
 public class StoreController {
 	public enum State {
@@ -39,10 +44,17 @@ public class StoreController {
 		transaction.accept(this.monitor);
 	}
 	
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	
 	public State getState() {
 		return storeState;
 	}
-	
+
 	public void setState(State state) {
 		storeState = state;
 	}
@@ -60,8 +72,29 @@ public class StoreController {
 	public StoreMonitor getMonitor() {
 		return monitor;
 	}
+	
+	public SortedMap<Key, ValueVersion> getProfile(Long profileID) {
+		Key key = Key.createKey("P"+profileID.toString());
+		return this.store.multiGet(key, null, null);		
+	}
+	
+	public void removeProfile(Long profileID) {
+		Key key = Key.createKey("P"+profileID.toString());
+		this.store.multiDelete(key, null, null);
+	}
+	
+	public void putProfile(SortedMap<Key, ValueVersion> profilItems) {
+		for (Map.Entry<Key, ValueVersion> entry : profilItems.entrySet()) {
+			this.store.put(entry.getKey(), entry.getValue().getValue());
+		}
+	}
 
 	public TransactionMetrics getTransactionMetrics() {
 		return monitor.getTransactionMetrics();
 	}
+
+	public void stop() {
+		monitor.setKeepRunning(false);		
+	}
+	
 }

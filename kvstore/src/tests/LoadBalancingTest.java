@@ -11,7 +11,9 @@ import java.util.concurrent.Future;
 import project.ConfigsServer;
 import project.application.ClientApplication;
 import project.application.ClientApplicationResult;
+import project.master.MissingConfigurationException;
 import project.master.StoreMaster;
+import project.store.TransactionMetrics;
 
 public class LoadBalancingTest {
 	public static void main(String[] args) {
@@ -27,16 +29,23 @@ public class LoadBalancingTest {
 		StoreMaster.setKVStores(ConfigsServer.getServersStores());
 	}
 
-	private void go() {
+	private void go() throws MissingConfigurationException {
 		System.out.println("Load Balancing Test go ...");
 
-		final int clientNumber = 10; 
+		final int clientNumber = 20; 
 
-		// gives the allowed profile targets to the client application (0 to 30)
-		ArrayList<Long> profileTargets = new ArrayList<Long>();
-		for (long pt = 0; pt < 30; pt++)
-			profileTargets.add(pt);
-
+		// targets for app with uniform profile distribution
+		ArrayList<Long> uniformTargets = new ArrayList<Long>();
+		for (long ut = 0; ut < 20; ut++)
+			uniformTargets.add(ut);
+		
+		// targets on specific profiles
+		ArrayList<Long> specificTargets = new ArrayList<Long>();
+		for (long st = 0; st < 20 ; st++) {
+			if (st % 5 == 0)
+				specificTargets.add(st);
+		}
+		
 		ExecutorService executor = Executors.newFixedThreadPool(clientNumber);
 
 		// List of Futures to catch results
@@ -44,7 +53,12 @@ public class LoadBalancingTest {
 		for (int i = 0; i < clientNumber; i++) {
 			
 			// Create and launch callables
-			Callable<ClientApplicationResult> app = new ClientApplication(i, profileTargets);
+			Callable<ClientApplicationResult> app = null;
+			if (i < 10)
+				app = new ClientApplication(i, uniformTargets);
+			else
+				app = new ClientApplication(i, specificTargets);
+			
 			Future<ClientApplicationResult> submit = executor.submit(app);
 			results.add(submit);
 		}
@@ -67,6 +81,21 @@ public class LoadBalancingTest {
 
 		executor.shutdown();
 		
+		StoreMaster master = StoreMaster.getStoreMaster();
+		List<TransactionMetrics> transactionMetricsList = master.getTransactionMetrics();
+		int index = 0;
+		for (TransactionMetrics transactionMetrics: transactionMetricsList) {
+			String prefix = "  store " + index + " - " + transactionMetrics.getOperationName() + " - ";
+			System.out.println(prefix + transactionMetrics.getTotalRequests() + " requests");
+			System.out.println(prefix + transactionMetrics.getTotalOps() + " operations");
+			System.out.println(prefix + "min latency " + transactionMetrics.getMinLatencyMs() + " ms");
+			System.out.println(prefix + "avg latency " + transactionMetrics.getAverageLatencyMs() + " ms");
+			System.out.println(prefix + "max latency " + transactionMetrics.getMaxLatencyMs() + " ms");
+			System.out.println();
+			index++;
+		}
+		
+		master.stop();
 		System.out.println("Load Balancing Test ... Done");
 	}
 
