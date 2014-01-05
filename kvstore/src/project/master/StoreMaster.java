@@ -15,6 +15,7 @@ import project.masters.dispatchers.SingleStoreDispatcher;
 import project.masters.dispatchers.StoreDispatcher;
 import project.masters.dispatchers.UnsupportedException;
 import project.store.StoreController;
+import project.store.TransactionMetrics;
 
 public class StoreMaster {
 	// Singleton instance
@@ -36,7 +37,7 @@ public class StoreMaster {
 		
 		this.dispatcher = new MultipleStoreDispatcher(stores.size());
 		
-		new Thread(new StoreSupervisor()).start();
+		//new Thread(new StoreSupervisor()).start();
 	}
 	
 	public static void setKVStores(List<KVStore> stores) {
@@ -102,6 +103,14 @@ public class StoreMaster {
 	 */
 	public void setDispatcher(StoreDispatcher dispatcher) {
 		this.dispatcher = dispatcher;
+	}
+
+	public List<TransactionMetrics> getTransactionMetrics() {
+		List<TransactionMetrics> transactionMetrics = new ArrayList<TransactionMetrics>();
+		for (StoreController controller: stores) {
+			transactionMetrics.add(controller.getTransactionMetrics());
+		}
+		return transactionMetrics;
 	}
 	
 }

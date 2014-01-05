@@ -27,7 +27,7 @@ public class StoreMonitor implements Runnable {
 		this.store = store;
 		this.name = name;
 		this.transactionMetrics = new TransactionMetrics();
-		this.keepRunning = true;
+		this.setKeepRunning(true);
 		
 		// TODO initiate parameters from store
 		this.itemIds = new HashMap<Long, Long>();
@@ -66,15 +66,15 @@ public class StoreMonitor implements Runnable {
 	@Override
 	public void run() {
 		
-		while(keepRunning) {
-			System.out.println("StoreMonitor");
+		while(isKeepRunning()) {
+			//System.out.println("StoreMonitor");
 			
-			String prefix = "  " + name + " - " + transactionMetrics.getOperationName() + " - ";
-			System.out.println(prefix + transactionMetrics.getTotalRequests() + " requets");
-			System.out.println(prefix + transactionMetrics.getTotalOps() + " operations");
-			System.out.println(prefix + "min latency " + transactionMetrics.getMinLatencyMs() + " ms");
-			System.out.println(prefix + "avg latency " + transactionMetrics.getAverageLatencyMs() + " ms");
-			System.out.println(prefix + "max latency " + transactionMetrics.getMaxLatencyMs() + " ms");
+			//String prefix = "  " + name + " - " + transactionMetrics.getOperationName() + " - ";
+			//System.out.println(prefix + transactionMetrics.getTotalRequests() + " requets");
+			//System.out.println(prefix + transactionMetrics.getTotalOps() + " operations");
+			//System.out.println(prefix + "min latency " + transactionMetrics.getMinLatencyMs() + " ms");
+			//System.out.println(prefix + "avg latency " + transactionMetrics.getAverageLatencyMs() + " ms");
+			//System.out.println(prefix + "max latency " + transactionMetrics.getMaxLatencyMs() + " ms");
 					
 		    try { Thread.sleep(SUPERVISOR_INTERVAL); }
 		    catch (InterruptedException e) {}
@@ -84,5 +84,17 @@ public class StoreMonitor implements Runnable {
 
 	public void updateTransactionMetrics(int latencyMs, int nbOperations) {
 		this.transactionMetrics.update(latencyMs, nbOperations);
+	}
+
+	public TransactionMetrics getTransactionMetrics() {
+		return transactionMetrics;
+	}
+
+	private boolean isKeepRunning() {
+		return keepRunning;
+	}
+	
+	public void setKeepRunning(boolean keepRunning) {
+		this.keepRunning = keepRunning;
 	}
 }

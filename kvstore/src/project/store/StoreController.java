@@ -60,4 +60,8 @@ public class StoreController {
 	public StoreMonitor getMonitor() {
 		return monitor;
 	}
+
+	public TransactionMetrics getTransactionMetrics() {
+		return monitor.getTransactionMetrics();
+	}
 }
