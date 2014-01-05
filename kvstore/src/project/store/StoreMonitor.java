@@ -3,6 +3,7 @@ package project.store;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import oracle.kv.KVStore;
 import oracle.kv.stats.KVStats;
@@ -35,6 +36,21 @@ public class StoreMonitor implements Runnable {
 	
 	public long getMaxId(long profile) {
 		return itemIds.get(profile);
+	}
+	
+	public Long getProfilMaxItems() {
+		Long result = null;
+		Long max = new Long(-1);
+		for(Entry<Long, Long> entry : itemIds.entrySet()) {
+		    Long nbItems = entry.getValue();
+		    if(nbItems > max) {
+		    	Long profilId = entry.getKey();
+		    	max = nbItems;
+		    	result = profilId;
+		    }
+		    
+		}
+		return result;
 	}
 	
 	synchronized public long getAndIncMaxId(long profile) {

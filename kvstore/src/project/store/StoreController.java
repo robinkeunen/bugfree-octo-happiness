@@ -53,4 +53,11 @@ public class StoreController {
 	public KVStore getStore() {
 		return store;
 	}
+
+	/**
+	 * @return the monitor
+	 */
+	public StoreMonitor getMonitor() {
+		return monitor;
+	}
 }

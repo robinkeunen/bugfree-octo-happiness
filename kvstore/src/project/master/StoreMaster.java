@@ -13,6 +13,7 @@ import oracle.kv.ValueVersion;
 import project.masters.dispatchers.MultipleStoreDispatcher;
 import project.masters.dispatchers.SingleStoreDispatcher;
 import project.masters.dispatchers.StoreDispatcher;
+import project.masters.dispatchers.UnsupportedException;
 import project.store.StoreController;
 
 public class StoreMaster {
@@ -20,7 +21,7 @@ public class StoreMaster {
 	private static StoreMaster storeMaster;
 	private static List<KVStore> kvstores;
 	
-	static List<StoreController> stores;
+	List<StoreController> stores;
 	private StoreDispatcher dispatcher;
 	
 	private StoreMaster()  {
@@ -34,6 +35,8 @@ public class StoreMaster {
 		}
 		
 		this.dispatcher = new MultipleStoreDispatcher(stores.size());
+		
+		new Thread(new StoreSupervisor()).start();
 	}
 	
 	public static void setKVStores(List<KVStore> stores) {
@@ -58,27 +61,41 @@ public class StoreMaster {
 		targetStore.doProfileTransaction(profileKey);
 	}
 
-	static void moveProfil(StoreController kv_src, StoreController kv_targ, String profilID) {
+	void moveProfil(StoreController kv_src, StoreController kv_targ, Long profilID) {
 		// Read in StoreA
 		// TODO manipulate StoreController instead of KVStores
-		Key key = Key.createKey(profilID);
+		Key key = Key.createKey("P"+profilID.toString());
 		SortedMap<Key, ValueVersion> profilItems = kv_src.getStore().multiGet(key, null, null);
-		System.out.println("MOVE - GET ITEMS OF "+profilID+" FROM StoreSrc = "+profilItems.size()+" item(s).");
+		System.out.println("MOVE - GET ITEMS OF P"+profilID+" FROM StoreSrc = "+profilItems.size()+" item(s).");
 		// Write in StoreB
 		for (Map.Entry<Key, ValueVersion> entry : profilItems.entrySet()) {
 			System.out.println("MOVE - MOVE "+entry.getKey().getFullPath()+" from StoreSrc to StoreTarg");
 			kv_targ.getStore().put(entry.getKey(), entry.getValue().getValue());
 		}
+		try {
+			this.dispatcher.manualMap(profilID, getStoreIndex(kv_targ));
+		} catch (UnsupportedException e) {
+			
+		}
 		// Delete in StoreA
-		System.out.println("MOVE - DELETE "+profilID+" from StoreSrc");
+		System.out.println("MOVE - DELETE P"+profilID+" from StoreSrc");
 		removeProfil(kv_src, profilID);		
 	}
 	
-	static void removeProfil(StoreController kv, String profilID) {
-		Key key = Key.createKey(profilID);
+	private void removeProfil(StoreController kv, Long profilID) {
+		Key key = Key.createKey("P"+profilID.toString());
 		kv.getStore().multiDelete(key, null, null);
 	}
-
+	
+	private int getStoreIndex(StoreController kv) {
+		int ind = 0;
+		for(StoreController store : this.stores) {
+			if(store==kv)
+				return ind;
+			ind++;
+		}
+		return -1;
+	}
 
 	/**
 	 * @param dispatcher the dispatcher to set
