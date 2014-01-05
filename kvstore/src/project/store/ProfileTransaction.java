@@ -43,6 +43,11 @@ public class ProfileTransaction {
 		operations.add(put);
 	}
 	
+	public void addPutOperation(Key key, Value value) {
+		Operation put = operationFactory.createPut(key, value);
+		operations.add(put);		
+	}
+	
 	public void execute() throws OperationExecutionException {
 		try {
 			long start = System.currentTimeMillis();
