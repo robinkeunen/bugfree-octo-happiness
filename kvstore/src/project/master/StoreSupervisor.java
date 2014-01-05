@@ -3,7 +3,10 @@ package project.master;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+
 import project.store.StoreController;
+import project.store.TransactionMetrics;
 import project.store.StoreController.State;
 
 public class StoreSupervisor implements Runnable {
@@ -24,6 +27,37 @@ public class StoreSupervisor implements Runnable {
 	public void run() {
 		while(isKeepRunning()) {
 			System.out.println("StoreSupervisor - Start");
+			try {
+				List<TransactionMetrics> metrics = StoreMaster.getStoreMaster().getTransactionMetrics();
+				float cumul = 0;
+				double[] values = new double[metrics.size()];
+				int nbVal = 0;
+				for(TransactionMetrics metric : metrics) {
+					values[nbVal] = metric.getFilteredLatency();
+					cumul += values[nbVal++];
+				}
+				float average = cumul/(float)nbVal;
+				cumul = 0;
+				for(int i = 0; i < values.length; i++) {
+					cumul += java.lang.Math.pow((values[i] - average), (float)2.0);
+				}				
+				double mean = java.lang.Math.sqrt(cumul/(float)nbVal);
+				StandardDeviation stdDev = new StandardDeviation();
+				double deviation = stdDev.evaluate(values, mean);
+				System.out.println("MEAN = "+mean+" | STD_DEV = "+deviation);
+				for(StoreController storeCntr : StoreMaster.getStoreMaster().stores) {
+					float latency = storeCntr.getMonitor().getTransactionMetrics().getFilteredLatency();
+					if(latency > mean + deviation)
+						storeCntr.setState(State.OVERLOADED);
+					else if(latency < mean - deviation)
+						storeCntr.setState(State.UNDERLOADED);
+					else
+						storeCntr.setState(State.LOADED);
+				}
+				
+			} catch (MissingConfigurationException e1) {
+				// TODO Auto-generated catch block
+			}
 			List<StoreController> lstOver = getStoreController(State.OVERLOADED);
 			// Check all overloaded store.
 			for(StoreController store : lstOver) {
@@ -60,7 +94,7 @@ public class StoreSupervisor implements Runnable {
 		}
 	}
 	
-	public List<StoreController> getStoreController(State state) {
+	private List<StoreController> getStoreController(State state) {
 		List<StoreController> ret = new ArrayList<StoreController>();
 		try {
 			for(StoreController storeCntr : StoreMaster.getStoreMaster().stores) {

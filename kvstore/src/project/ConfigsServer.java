@@ -10,9 +10,9 @@ public class ConfigsServer {
 	private final static List<ServerParameters> lstServer = Arrays.asList(
 				new ServerParameters("store1", "localhost", "5000"),
 				new ServerParameters("store2", "localhost", "5020"),
-				new ServerParameters("store3", "localhost", "5040"),
-				new ServerParameters("store4", "localhost", "5060"),
-				new ServerParameters("store5", "localhost", "5080")
+				new ServerParameters("store3", "localhost", "5030"),
+				new ServerParameters("store4", "localhost", "5040"),
+				new ServerParameters("store5", "localhost", "5050")
 			);
 	
 	public static List<KVStore> getServersStores() {
