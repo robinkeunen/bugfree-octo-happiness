@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  5 JAN 2014 20:59
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  5 JAN 2014 21:38
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -821,7 +821,11 @@ File: tikzlibrarytopaths.code.tex 2008/06/17 v2.10 (rcs-revision 1.2)
 File: tikzlibraryplotmarks.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
  (/usr/local/texlive/2011/texmf-dist/tex/generic/pgf/libraries/pgflibraryplotmarks.code.tex
 File: pgflibraryplotmarks.code.tex 2010/10/15 v2.10 (rcs-revision 1.12)
-))) (/Users/roke/Dropbox/eclipse-ws/abdr/report/.texpadtmp/C.Barbier - R. Keunen.aux)
+))) (/Users/roke/Dropbox/eclipse-ws/abdr/report/.texpadtmp/C.Barbier - R. Keunen.aux
+
+LaTeX Warning: Label `stores_nobalancing' multiply defined.
+
+)
 \openout1 = `"C.Barbier - R. Keunen.aux"'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 89.
@@ -841,8 +845,7 @@ LaTeX Font Info:    ... okay on input line 89.
 LaTeX Info: Redefining \degres on input line 89.
 LaTeX Info: Redefining \dots on input line 89.
 LaTeX Info: Redefining \up on input line 89.
-
-(/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
+ (/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count161
 \scratchdimen=\dimen204
@@ -963,6 +966,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [2]
+PGFPlots: reading {./graphs/step1.dat}
+
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 13.59999pt.
@@ -970,7 +975,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [3]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 305.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 323.
 
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -979,27 +984,38 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 305.
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 13.59999pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[5]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 323.
  (/Users/roke/Dropbox/eclipse-ws/abdr/report/.texpadtmp/C.Barbier - R. Keunen.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 305.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 305.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 323.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 323.
 Package rerunfilecheck Info: File `"C.Barbier - R. Keunen".out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 305.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 323.
  ) 
 Here is how much of TeX's memory you used:
- 22909 strings out of 493633
- 460516 string characters out of 3143378
- 720072 words of memory out of 3000000
- 25747 multiletter control sequences out of 15000+200000
+ 22937 strings out of 493633
+ 461109 string characters out of 3143378
+ 720111 words of memory out of 3000000
+ 25771 multiletter control sequences out of 15000+200000
  19321 words of font info for 48 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  63i,19n,74p,610b,1689s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2011/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfbx2488.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfcc1095.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfcc1200.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfrm1440.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfti1095.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfxc1200.pfb>
-Output written on "/Users/roke/Dropbox/eclipse-ws/abdr/report/.texpadtmp/C.Barbier - R. Keunen.pdf" (4 pages, 239692 bytes).
+Output written on "/Users/roke/Dropbox/eclipse-ws/abdr/report/.texpadtmp/C.Barbier - R. Keunen.pdf" (5 pages, 242651 bytes).
 PDF statistics:
- 117 PDF objects out of 1000 (max. 8388607)
- 94 compressed objects within 1 object stream
- 20 named destinations out of 1000 (max. 500000)
+ 122 PDF objects out of 1000 (max. 8388607)
+ 98 compressed objects within 1 object stream
+ 22 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
