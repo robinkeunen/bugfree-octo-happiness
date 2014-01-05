@@ -20,12 +20,14 @@ public class ProfileTransaction {
 	private final KVStore store;
 	private final OperationFactory operationFactory;
 	private List<Operation> operations;
+	private int latencyMs;
 
 	public ProfileTransaction(KVStore store, long profileID) {
 		this.store = store;
 		this.profileId = profileID;
 		operationFactory = store.getOperationFactory();
 		operations = new LinkedList<Operation>();
+		this.latencyMs = 0;
 	}
 	
 	public void addPutOperation(Item item) {
@@ -43,13 +45,20 @@ public class ProfileTransaction {
 	
 	public void execute() throws OperationExecutionException {
 		try {
-			//System.out.println(profileId + " in");
+			long start = System.currentTimeMillis();
 			store.execute(operations);
-			//System.out.println(profileId + " out");
+			latencyMs = (int) (System.currentTimeMillis() - start);
+			
 		} catch (DurabilityException e) {
 			e.printStackTrace();
 		} catch (FaultException e) {
 			e.printStackTrace();
 		}
 	}
+
+	public void accept(StoreMonitor monitor) {
+		monitor.updateTransactionMetrics(latencyMs, operations.size());
+	}
+	
+	
 }

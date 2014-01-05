@@ -15,11 +15,10 @@ public class ClientApplication implements Callable<ClientApplicationResult> {
 	private StoreMaster storeMaster;
 
 	private ClientApplication() {
+		
 		this.id = 0;
-		profileTargets = new ArrayList<Long>();
 		try {
 			this.storeMaster = StoreMaster.getStoreMaster();
-
 		} catch (MissingConfigurationException e) {
 			e.printStackTrace();
 		}
@@ -29,11 +28,12 @@ public class ClientApplication implements Callable<ClientApplicationResult> {
 		this();
 		this.profileTargets = profileTargets;
 		this.id = id;
+		
 	}
 
 	@Override
 	public ClientApplicationResult call() throws Exception {
-
+		
 		Random random = new Random();
 
 		long startTime = System.nanoTime();

@@ -26,8 +26,11 @@ public class StoreMaster {
 	private StoreMaster()  {
 		
 		this.stores = new ArrayList<StoreController>();
-		for (KVStore kvstore: kvstores) {
-			this.stores.add(new StoreController(kvstore));
+		int index = 1;
+		for (KVStore kvstore: kvstores) { 
+			this.stores.add(new StoreController(kvstore, "store " + index));
+			index++;
+			
 		}
 		
 		this.dispatcher = new MultipleStoreDispatcher(stores.size());
@@ -42,7 +45,7 @@ public class StoreMaster {
 		if (kvstores == null) {
 			throw new MissingConfigurationException("you must set KVStores (setKVStores) before using the MasterStore");
 		}
-		if (storeMaster == null) {
+		if (storeMaster == null) {  
 			storeMaster = new StoreMaster();
 		}
 		return storeMaster;

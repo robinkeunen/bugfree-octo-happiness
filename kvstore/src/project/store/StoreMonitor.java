@@ -7,6 +7,7 @@ import java.util.List;
 import oracle.kv.KVStore;
 import oracle.kv.stats.KVStats;
 import oracle.kv.stats.OperationMetrics;
+import project.Utils;
 import project.master.StoreMaster;
 import project.store.StoreController.State;
 
@@ -17,9 +18,15 @@ public class StoreMonitor implements Runnable {
 	HashMap<Long, Long> itemIds;
 	private boolean keepRunning;
 	private List<Long> frequentlyAccessed;
+	private TransactionMetrics transactionMetrics;
+	private String name;
 
-	public StoreMonitor(KVStore store) {
+	public StoreMonitor(KVStore store, String name) {
+		
 		this.store = store;
+		this.name = name;
+		this.transactionMetrics = new TransactionMetrics();
+		this.keepRunning = true;
 		
 		// TODO initiate parameters from store
 		this.itemIds = new HashMap<Long, Long>();
@@ -44,13 +51,22 @@ public class StoreMonitor implements Runnable {
 	public void run() {
 		
 		while(keepRunning) {
-			System.out.println("StoreMonitor - Start");
-			KVStats stats = store.getStats(true);
-			List<OperationMetrics> operationMetrics = stats.getOpMetrics();
-			System.out.println("StoreMonitor - Sleep");
+			System.out.println("StoreMonitor");
+			
+			String prefix = "  " + name + " - " + transactionMetrics.getOperationName() + " - ";
+			System.out.println(prefix + transactionMetrics.getTotalRequests() + " requets");
+			System.out.println(prefix + transactionMetrics.getTotalOps() + " operations");
+			System.out.println(prefix + "min latency " + transactionMetrics.getMinLatencyMs() + " ms");
+			System.out.println(prefix + "avg latency " + transactionMetrics.getAverageLatencyMs() + " ms");
+			System.out.println(prefix + "max latency " + transactionMetrics.getMaxLatencyMs() + " ms");
+					
 		    try { Thread.sleep(SUPERVISOR_INTERVAL); }
 		    catch (InterruptedException e) {}
 		}
 
+	}
+
+	public void updateTransactionMetrics(int latencyMs, int nbOperations) {
+		this.transactionMetrics.update(latencyMs, nbOperations);
 	}
 }

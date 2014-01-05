@@ -32,7 +32,7 @@ public class LoadBalancingTest {
 
 		final int clientNumber = 10; 
 
-		// gives the allowed profile targets to the client application (0 to 4)
+		// gives the allowed profile targets to the client application (0 to 30)
 		ArrayList<Long> profileTargets = new ArrayList<Long>();
 		for (long pt = 0; pt < 30; pt++)
 			profileTargets.add(pt);
@@ -42,7 +42,7 @@ public class LoadBalancingTest {
 		// List of Futures to catch results
 		List<Future<ClientApplicationResult>> results = new ArrayList<Future<ClientApplicationResult>>();
 		for (int i = 0; i < clientNumber; i++) {
-
+			
 			// Create and launch callables
 			Callable<ClientApplicationResult> app = new ClientApplication(i, profileTargets);
 			Future<ClientApplicationResult> submit = executor.submit(app);
@@ -65,9 +65,8 @@ public class LoadBalancingTest {
 		System.out.println("  " + clientNumber + " clients");
 		System.out.println("Average transaction execution time:\n    " + average/1000000L + " ms");
 
-		// compute and store new average
-
-
+		executor.shutdown();
+		
 		System.out.println("Load Balancing Test ... Done");
 	}
 

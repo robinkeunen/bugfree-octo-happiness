@@ -13,10 +13,14 @@ public class StoreController {
 	private StoreMonitor monitor;
 	
 	private State storeState = State.LOADED;
+	private String name;
 
-	public StoreController(KVStore kvstore) {
+	public StoreController(KVStore kvstore, String name) {
+		this.name = name;
 		this.store = kvstore;
-		this.monitor = new StoreMonitor(store);
+		this.monitor = new StoreMonitor(store, name);
+		Thread worker = new Thread(monitor);
+		worker.start();
 	}
 
 	public void doProfileTransaction(Long profileKey) throws OperationExecutionException {
@@ -32,6 +36,7 @@ public class StoreController {
 			
 		}
 		transaction.execute();
+		transaction.accept(this.monitor);
 	}
 	
 	public State getState() {
