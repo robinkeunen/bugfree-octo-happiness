@@ -79,6 +79,9 @@ public class StoreMonitor implements Runnable {
 			e.printStackTrace();
 		}
 		
+		logger.println("time\tlatency");
+		long start = System.currentTimeMillis();
+		
 		while(isKeepRunning()) {
 			//System.out.println("StoreMonitor");
 			
@@ -88,7 +91,8 @@ public class StoreMonitor implements Runnable {
 			//System.out.println(prefix + "min latency " + transactionMetrics.getMinLatencyMs() + " ms");
 			//System.out.println(prefix + "avg latency " + transactionMetrics.getAverageLatencyMs() + " ms");
 			//System.out.println(prefix + "max latency " + transactionMetrics.getMaxLatencyMs() + " ms");
-			
+			long t = System.currentTimeMillis();
+			logger.print(t - start + "\t");
 			logger.println(transactionMetrics.getFilteredLatency());
 			
 		    try { Thread.sleep(SUPERVISOR_INTERVAL); }

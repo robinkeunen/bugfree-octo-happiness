@@ -1,0 +1,34 @@
+  store 0 - doProfileTransaction - 3702 requests
+  store 0 - doProfileTransaction - 370100 operations
+  store 0 - doProfileTransaction - min latency 2 ms
+  store 0 - doProfileTransaction - avg latency 25.26436 ms
+  store 0 - doProfileTransaction - max latency 908 ms
+  store 0 - doProfileTransaction - filtered latency 38.12142 ms
+
+  store 1 - doProfileTransaction - 581 requests
+  store 1 - doProfileTransaction - 58200 operations
+  store 1 - doProfileTransaction - min latency 2 ms
+  store 1 - doProfileTransaction - avg latency 21.06542 ms
+  store 1 - doProfileTransaction - max latency 420 ms
+  store 1 - doProfileTransaction - filtered latency 19.959625 ms
+
+  store 2 - doProfileTransaction - 569 requests
+  store 2 - doProfileTransaction - 56900 operations
+  store 2 - doProfileTransaction - min latency 2 ms
+  store 2 - doProfileTransaction - avg latency 23.098413 ms
+  store 2 - doProfileTransaction - max latency 501 ms
+  store 2 - doProfileTransaction - filtered latency 15.858789 ms
+
+  store 3 - doProfileTransaction - 552 requests
+  store 3 - doProfileTransaction - 55200 operations
+  store 3 - doProfileTransaction - min latency 3 ms
+  store 3 - doProfileTransaction - avg latency 22.289856 ms
+  store 3 - doProfileTransaction - max latency 414 ms
+  store 3 - doProfileTransaction - filtered latency 23.033442 ms
+
+  store 4 - doProfileTransaction - 532 requests
+  store 4 - doProfileTransaction - 53200 operations
+  store 4 - doProfileTransaction - min latency 2 ms
+  store 4 - doProfileTransaction - avg latency 24.067665 ms
+  store 4 - doProfileTransaction - max latency 699 ms
+  store 4 - doProfileTransaction - filtered latency 19.153994 ms
