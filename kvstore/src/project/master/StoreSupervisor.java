@@ -58,7 +58,29 @@ public class StoreSupervisor implements Runnable {
 			} catch (MissingConfigurationException e1) {
 				// TODO Auto-generated catch block
 			}
-			List<StoreController> lstOver = getStoreController(State.OVERLOADED);
+			
+			StoreController mostOverloaded = getMostOverloaded();
+			if(mostOverloaded != null) {
+				StoreController mostUnderloaded = getMostUnderloaded();
+				if(mostUnderloaded!=null) {
+					// Get the bigger profile. 
+					Long profilID = mostOverloaded.getMonitor().getProfilMaxItems();
+					if(profilID != null){
+						// Move profile.
+						try {
+							System.out.println("StoreSupervisor - Profil to move : P"+profilID);
+							StoreMaster.getStoreMaster().moveProfil(mostOverloaded, mostUnderloaded, profilID);
+							System.out.println("StoreSupervisor - Profil moved");
+							// TODO : Update frequentlyAccessed.
+						} catch (MissingConfigurationException e) {
+
+						}	
+					}
+					else
+						System.out.println("StoreSupervisor - No Profil selected");					
+				}
+			}
+			/*List<StoreController> lstOver = getStoreController(State.OVERLOADED);
 			// Check all overloaded store.
 			for(StoreController store : lstOver) {
 				List<StoreController> lstNotOver = new ArrayList<StoreController>(getStoreController(State.UNDERLOADED));
@@ -87,11 +109,43 @@ public class StoreSupervisor implements Runnable {
 					System.out.println("StoreSupervisor - A Store is overloaded but no store available to move profiles.");
 					break;
 				}				
-			}
+			} */
 			System.out.println("StoreSupervisor - Sleep");
 		    try { Thread.sleep(SUPERVISOR_INTERVAL); }
 		    catch (InterruptedException e) {}
 		}
+	}
+	
+	private StoreController getMostOverloaded() {
+		List<StoreController> stores = getStoreController(State.OVERLOADED);
+		StoreController ret = null;
+		float max = -1;
+		for(StoreController store : stores) {
+			float latency = store.getTransactionMetrics().getFilteredLatency();
+			if(latency>max) {
+				max = latency;
+				ret = store;
+			}
+		}
+		return ret;
+	}
+	
+	private StoreController getMostUnderloaded() {
+		List<StoreController> lstNotOver = new ArrayList<StoreController>(getStoreController(State.UNDERLOADED));
+		if(lstNotOver.isEmpty())
+			lstNotOver.addAll(getStoreController(State.LOADED));
+		StoreController ret = null;
+		if(!lstNotOver.isEmpty()) {
+			float min = lstNotOver.get(0).getTransactionMetrics().getFilteredLatency();
+			for(StoreController store : lstNotOver) {
+				float latency = store.getTransactionMetrics().getFilteredLatency();
+				if(latency<min) {
+					min = latency;
+					ret = store;
+				}
+			}
+		}
+		return ret;
 	}
 	
 	private List<StoreController> getStoreController(State state) {
