@@ -132,7 +132,8 @@ public class StoreSupervisor implements Runnable {
 	
 	private StoreController getMostUnderloaded() {
 		List<StoreController> lstNotOver = new ArrayList<StoreController>(getStoreController(State.UNDERLOADED));
-		lstNotOver.addAll(getStoreController(State.LOADED));
+		if(lstNotOver.isEmpty())
+			lstNotOver.addAll(getStoreController(State.LOADED));
 		StoreController ret = null;
 		if(!lstNotOver.isEmpty()) {
 			float min = lstNotOver.get(0).getTransactionMetrics().getFilteredLatency();
