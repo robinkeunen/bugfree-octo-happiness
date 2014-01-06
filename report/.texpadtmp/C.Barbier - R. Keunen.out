@@ -1,1 +1,7 @@
 \BOOKMARK [1][-]{section.1}{Transaction et concurrence}{}% 1
+\BOOKMARK [1][-]{section.2}{Equilibrage de charges sur plusieurs KVStores}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Structure de notre solution}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Politique d'\351quilibrage}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{\351tape 1 a}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{\351tape 1 b}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.5}{Etape 2}{section.2}% 7

@@ -208,12 +208,127 @@ Le code se trouve dans le projet kvstore dans les packages \verb tme1.ex1  et \v
     Au final, les valeurs auront été incrémentées deux fois lors de cette itération.  
     Voir la table \ref{M2} en annexe pour un exemple d'exécution.
 
-\subsubsection*{Transactions}
+\paragraph*{M3}
+    Pour que les résultats soient cohérents, il faut que les opérations de mises à jours soient atomiques.
+    Les transactions atomiques sont implémentées dans la classe \verb Transaction .
+    Les opérations ne peuvent être exécutées de façon atomiques que si les clés ciblées partagent la même clé majeur. 
+    C'est le cas ici, nous ne manipulons que des éléments de la même catégorie.
+    La clé des produits est composée d'une partie majeure correspondant à la catégorie et d'une clé mineure correspondant au produit.
+    
+
+\section{Equilibrage de charges sur plusieurs KVStores}
+
+\subsection{Structure de notre solution}
+
+Nous avons essayé de rajouter une couche d'abstraction au dessus des KVStores: les applications clientes s'adressent à un élément unique, le maitre (\emph{Singleton}): le \verb StoreMaster . 
+Le maitre redistribue la charge aux différents stores.
+Puisque l'objet est unique et centralisé, il est possible que les opérations subissent un effet de goulot d'étranglement. 
+Cependant, un maitre décentralisé aurait été trop long à implémenter pour ce projet.
+
+Cette section détaille les éléments logiciels de notre solution. 
+
+\begin{description}
+    
+\item[project] \hfill \\
+    \begin{description}
+      \item[Item] \hfill \\
+          \verb Item  modélise l'objet à ajouter à la base.
+          Il contient cinq champs numériques et cinq champs \verb String .
+      \item[ServerParameters] \hfill \\
+          \verb ServerParameters  encapsule les paramètres nécessaires pour accéder à un KVStore (nom, IP et port).
+      \item[ConfigsServer] \hfill \\
+      \verb ConfigsServer  mémorise les paramètres correspondant aux serveurs lancés par le script fourni avec le projet.
+    \end{description}
+    
+\item[project.master] \hfill    
+    \begin{description}
+      \item[StoreMaster] \hfill \\
+          \verb StoreMaster  est l'interface fournie aux applications clientes.
+            Il maintient une liste de \verb StoreController s (un par KVStore concret).
+            Ces \\ \verb StoreController s fournissent une interface aux KVStore.
+            \verb StoreMaster  délègue les opérations du client à un des contrôleurs.
+            La délégation est faite par un \verb StoreDispatcher  au moyen du numéro du profil manipulé.
+      \item[MissingConfigurationException] \hfill \\
+          Avant d'être utilisé, le \verb StoreMaster doit être configuré.
+          La configuration consiste à lui passer une liste d'instances de \verb oracle.kv.KVStore .
+          Si cette configuration n'a pas été faite avant la instantiation, cette exception est levée.
+      \item[StoreSupervisor] \hfill \\
+          \verb StoreSupervisor  est un Runnable lancé au moment de l'instantiation du maitre. 
+          Cet objet consulte les statistiques de chaque contrôleur et déclenche un déplacement de profil pour équilibrer la charge.
+    \end{description}
+    
+\item[project.master.dispatchers] \hfill
+    
+    \begin{description}
+      \item[StoreDispatcher] \hfill \\
+            Les \verb StoreDispatcher  servent à attribuer un contrôleur à chaque profil.
+            La fonction \emph{getStoreIndexForKey} retourne un entier qui servira d'index dans la liste de contrôleurs du \verb StoreMaster .
+      \item[SingleStoreDispatcher] \hfill \\
+          Utilisé dans l'étape 1 de la résolution.
+          Retourne 0 quelque soit le profil.
+          \item[TwoStoreDispatcher] \hfill \\
+          Utilisé dans l'étape 2 de la résolution.
+          Retourne 0 pour les profils pairs et 1 pour les profils impairs.
+          \item[MultipleStoreDispatcher] \hfill \\
+            \emph{Dispatcher} final. 
+            Il retourne $index = (profil \mod n)$ où $n$ est le nombre de stores.
+            \verb MultipleStoreDispatcher  supporte en outre la fonction \emph{manualMap}.
+            Cette fonction permet d'assigner manuellement un store à un profil.
+            Lorsque le \verb StoreMaster  demande un index pour un profil, \\ \verb MultipleStoreDispatcher  fait un lookup dans sa table de profil.
+            Si le profil est dans la table, il retourne l'index associé, sinon il retourne l'index selon la fonction indiquée plus haut.        
+                
+    \end{description}
+    
+\item[project.store] \hfill
+    
+    \begin{description}
+      \item[StoreController] \hfill \\
+          \verb StoreController  est un \emph{wrapper} pour les KVStore concrets (\verb oracle.kv.KVStore ).
+          Il implémente les opérations du KVStore dont nous avons besoin.
+      \item[ProfileTransaction] \hfill \\
+          \verb ProfileTransaction  est créé par le controleur pour créer une transaction atomique.
+          Cette classe est instanciée pour un profil donné, le contrôlleur lui ajoute des opérations et lance l'exécution.
+      \item[StoreMonitor] \hfill \\
+            \verb StoreMonitor est un \verb Runnable  permettant de récolter des statistiques sur les opérations.
+            C'est aussi cette classe qui gère l'attribution des indexes aux \verb Item s insérés.
+      \item[TransactionMetrics] \hfill \\
+          Implémente \verb oracle.kv.stats.OperationMetrics . 
+          Cette classe sert à collecter les statistiques sur les transactions effectuées.
+          Les statistiques sont mises à jour pour chaque transaction.
+          Nous avons ajouté le champ \emph{filteredLatency} dont nous parlerons plus tard.
+    \end{description}
+    
+\item[project.application] \hfill
+    
+    \begin{description}
+      \item[ClientApplication] \hfill \\
+      The first item
+      \item[ClientApplication] \hfill \\
+      The second item
+    \end{description}
+    
+\item[tests] \hfill
+    
+    \begin{description}
+      \item[First] \hfill \\
+      The first item
+      \item[Second] \hfill \\
+      The second item
+      \item[Third] \hfill \\
+      The third etc \ldots
+    \end{description}
 
 
-\section*{Equilibrage de charges sur plusieurs KVStores}
+\end{description}
 
-\subsection*{étape 1 a}
+\subsection{Politique d'équilibrage}
+filtre exponentiel
+
+facteur d'oubli
+
+mean et standard deviation
+
+\subsection{étape 1 a}
 
 \begin{figure}
     \begin{tikzpicture} 
@@ -243,10 +358,10 @@ Le code se trouve dans le projet kvstore dans les packages \verb tme1.ex1  et \v
 \end{figure}
 
 
-\subsection*{étape 1 b}
+\subsection{étape 1 b}
 75695802
 
-\subsection*{Etape 2}
+\subsection{Etape 2}
 Le déplacement d'un profil Px d'un store Si à un store Sj n'est pas une opération atomique par définition. 
 
 Imaginons un fonction moveProfil prenant en paramêtre un store source (Si), un store cible (Sj) et l'identifiant du profil à déplacer (Px). Cette fonction est une transaction qui fait éxécute une suite d'opérations :
