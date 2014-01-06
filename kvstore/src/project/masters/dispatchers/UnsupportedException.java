@@ -1,5 +1,9 @@
 package project.masters.dispatchers;
 
+/**
+ * Exception non gérée.
+ *
+ */
 public class UnsupportedException extends Exception {
 	/**
 	 * 

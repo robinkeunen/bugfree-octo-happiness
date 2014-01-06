@@ -9,6 +9,11 @@ import java.util.Map.Entry;
 
 import oracle.kv.KVStore;
 
+/**
+ * StoreMonitor est un Runnable permettant de récolter des statistiques sur les opérations.
+ * C'est aussi cette classe qui gère l'attribution des indexes aux Items insérés.
+ *
+ */
 public class StoreMonitor implements Runnable {
 	
 	private static long SUPERVISOR_INTERVAL = 100;

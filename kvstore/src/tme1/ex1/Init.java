@@ -4,6 +4,8 @@ import oracle.kv.*;
 
 /**
  * TME avec KVStore : Init
+ * @author Robin Keunen
+ * @author Clément Barbier
  */
 public class Init{
 

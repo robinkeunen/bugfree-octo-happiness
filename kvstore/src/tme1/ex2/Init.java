@@ -24,7 +24,7 @@ public class Init{
 	/**
 	 * Parses command line args and opens the KVStore.
 	 */
-	private Init(String[] argv) {
+	/*private Init(String[] argv) {
 
 		// kvstore development parameters
 		String storeName = "kvstore";
@@ -62,7 +62,7 @@ public class Init{
 
 		store = KVStoreFactory.getStore
 				(new KVStoreConfig(storeName, hostName + ":" + hostPort));
-	}
+	}*/
 
 	public Init() {
 
@@ -76,14 +76,14 @@ public class Init{
 	}
 
 	
-	private void usage(String message) {
+	/*private void usage(String message) {
 		System.out.println("\n" + message + "\n");
 		System.out.println("usage: " + getClass().getName());
 		System.out.println("\t-store <instance name> (default: kvstore) " +
 				"-host <host name> (default: localhost) " +
 				"-port <port number> (default: 5000)");
 		System.exit(1);
-	}
+	}*/
 
 	/**
 	 * Initialisation. Puts 200 products P0 to P199 classified in

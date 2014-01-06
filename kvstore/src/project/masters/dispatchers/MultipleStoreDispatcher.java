@@ -2,6 +2,16 @@ package project.masters.dispatchers;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Il retourne index = (profil mod n) où n est le nombre de stores.
+ * MultipleStoreDispatcher supporte en outre la fonction manualMap.
+ * Cette fonction permet d'assigner manuellement un store à un profil.
+ * Lorsque le StoreMaster demande un index pour un profil, MultipleStoreDispatcher 
+ * fait un lookup dans sa table de profil.
+ * Si le profil est dans la table, il retourne l'index associé, sinon il retourne 
+ * l'index selon la fonction indiquée plus haut.        
+ *
+ */
 public class MultipleStoreDispatcher extends StoreDispatcher {
 	
 	private ConcurrentHashMap<Long, Integer> profileMap;

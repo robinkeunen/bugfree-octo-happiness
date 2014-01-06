@@ -9,6 +9,11 @@ import oracle.kv.OperationExecutionException;
 import project.Item;
 import oracle.kv.ValueVersion;
 
+/**
+ * StoreController  est un wrapper pour les KVStore concrets ( oracle.kv.KVStore ).
+ * Il implémente les opérations du KVStore dont nous avons besoin.
+ *
+ */
 public class StoreController {
 	public enum State {
 	    UNDERLOADED, LOADED, OVERLOADED 

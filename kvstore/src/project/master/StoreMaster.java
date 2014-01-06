@@ -1,10 +1,8 @@
 package project.master;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-
 import oracle.kv.KVStore;
 import oracle.kv.Key;
 import oracle.kv.OperationExecutionException;
@@ -15,6 +13,14 @@ import project.masters.dispatchers.UnsupportedException;
 import project.store.StoreController;
 import project.store.TransactionMetrics;
 
+/**
+ * StoreMaster  est l'interface fournie aux applications clientes.
+ * Il maintient une liste de StoreController s (un par KVStore concret).
+ * Ces StoreControllers fournissent une interface aux KVStore.
+ * StoreMaster délègue les opérations du client à un des contrôleurs.
+ * La délégation est faite par un StoreDispatcher  au moyen du numéro du profil manipulé.
+ *
+ */
 public class StoreMaster {
 	// Singleton instance 
 	private static StoreMaster storeMaster;

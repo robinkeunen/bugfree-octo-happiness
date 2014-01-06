@@ -4,6 +4,10 @@ import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
 import oracle.kv.KVStoreFactory;
 
+/**
+ * ServerParameters  encapsule les paramètres nécessaires pour 
+ * accéder à un KVStore (nom, IP et port).
+ */
 public class ServerParameters {
 
 	private String storeName = "kvstore";

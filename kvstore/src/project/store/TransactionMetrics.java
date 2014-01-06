@@ -2,6 +2,11 @@ package project.store;
 
 import oracle.kv.stats.OperationMetrics;
 
+/**
+ * Implémente oracle.kv.stats.OperationMetrics . 
+ * Cette classe sert à collecter les statistiques sur les transactions effectuées.
+ * Les statistiques sont mises à jour pour chaque transaction.
+ */
 public class TransactionMetrics implements OperationMetrics {
 
 	private float averageLatencyMs;

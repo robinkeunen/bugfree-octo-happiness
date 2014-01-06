@@ -15,6 +15,10 @@ import project.master.MissingConfigurationException;
 import project.master.StoreMaster;
 import project.store.TransactionMetrics;
 
+/**
+ * Class permettant de calculer des statistiques sur le LoadBalancing.
+ *
+ */
 public class LoadBalancingTest {
 	public static void main(String[] args) {
 		try {

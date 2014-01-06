@@ -1,5 +1,10 @@
 package project.masters.dispatchers;
 
+/**
+ * Utilisé dans l'étape 1 de la résolution.
+ * Retourne 0 quelque soit le profil.
+ *
+ */
 public class SingleStoreDispatcher extends StoreDispatcher {
 
 	public SingleStoreDispatcher() {

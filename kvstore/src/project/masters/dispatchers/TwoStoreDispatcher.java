@@ -1,5 +1,10 @@
 package project.masters.dispatchers;
 
+/**
+ * Utilisé dans l'étape 2 de la résolution.
+ * Retourne 0 pour les profils pairs et 1 pour les profils impairs.
+ *
+ */
 public class TwoStoreDispatcher extends StoreDispatcher {
 
 	public TwoStoreDispatcher() {

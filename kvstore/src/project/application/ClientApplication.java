@@ -16,7 +16,7 @@ public class ClientApplication implements Callable<ClientApplicationResult> {
 
 	private ClientApplication() {
 		
-		this.id = 0;
+		this.setId(0);
 		try {
 			this.storeMaster = StoreMaster.getStoreMaster();
 		} catch (MissingConfigurationException e) {
@@ -27,8 +27,22 @@ public class ClientApplication implements Callable<ClientApplicationResult> {
 	public ClientApplication(long id, ArrayList<Long> profileTargets) {
 		this();
 		this.profileTargets = profileTargets;
-		this.id = id;
+		this.setId(id);
 		
+	}
+
+	/**
+	 * @return the id
+	 */
+	public long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	private void setId(long id) {
+		this.id = id;
 	}
 
 	@Override
@@ -37,7 +51,7 @@ public class ClientApplication implements Callable<ClientApplicationResult> {
 		Random random = new Random();
 
 		long startTime = System.nanoTime();
-		long fiveSeconds = 5000000000L;
+		//long fiveSeconds = 5000000000L;
 		long tenSeconds = 10000000000L;
 
 		int iterations = 0;

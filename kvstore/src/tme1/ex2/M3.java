@@ -83,39 +83,6 @@ public class M3 {
 		}
 		
 		System.out.println("M3 ... done");
-	}
-	
-	private void transaction() {
-		
-
-		for (int i = 0; i < 1000; i++) {
-			boolean succesfulWrite = false;
-
-			/*List<Operation> operations = new ArrayList<Operation>();
-					OperationFactory of = store.getOperationFactory();
-					int index = 0;
-					for (Key k : keyList) {
-						Operation piv = of.createPutIfVersion(
-								k, v, vss.get(index).getVersion(), 
-								ReturnValueVersion.Choice.NONE, true);
-						operations.add(piv);
-						index++;
-					}
-
-					store.execute(operations);
-					System.out.println(i + ". wrote " + (max + 1));
-					succesfulWrite = true;
-					
-				} catch (OperationExecutionException e) {
-					succesfulWrite = false;
-					System.out.println("----- abort -----");
-					continue;
-				}
-			}*/
-		}
-		
-
-	}
-
+	}	
 	
 }

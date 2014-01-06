@@ -14,6 +14,11 @@ import oracle.kv.OperationFactory;
 import oracle.kv.Value;
 import project.Item;
 
+/**
+ * ProfileTransaction  est créé par le contrôleur pour créer une transaction atomique.
+ * Cette classe est instanciée pour un profil donné, le contrôleur lui ajoute des opérations et lance l'exécution.
+ *
+ */
 public class ProfileTransaction {
 	
 	private final long profileId;

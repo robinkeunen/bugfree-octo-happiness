@@ -9,6 +9,12 @@ import project.store.StoreController;
 import project.store.TransactionMetrics;
 import project.store.StoreController.State;
 
+/**
+ * StoreSupervisor  est un Runnable lancé au moment de l'instantiation du maitre. 
+ * Cet objet consulte les statistiques de chaque contrôleur et déclenche un déplacement 
+ * de profil pour équilibrer la charge.
+ *
+ */
 public class StoreSupervisor implements Runnable {
 	
 	private boolean keepRunning = true;

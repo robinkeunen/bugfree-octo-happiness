@@ -12,7 +12,7 @@ import java.util.Random;
 
 /**
  * Item  modélise l'objet à ajouter à la base.
- * Il contient cinq champs numériques et cinq champs \verb String .
+ * Il contient cinq champs numériques et cinq champs String .
  */
 public class Item implements Serializable {
 
@@ -274,6 +274,4 @@ public class Item implements Serializable {
 
 		return new String(word);
 	}
-
-
 }

@@ -1,8 +1,8 @@
 package project.masters.dispatchers;
 
 /**
- * Maps keys to store. 
- * @author Robin Keunen
+ * Les StoreDispatcher servent à attribuer un contrôleur à chaque profil.
+ * La fonctiongetStoreIndexForKey retourne un entier qui servira d'index dans la liste de contrôleurs du StoreMaster .
  */
 public abstract class StoreDispatcher {
 		

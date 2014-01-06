@@ -1,6 +1,5 @@
 package tests;
 
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -18,6 +17,10 @@ import project.master.StoreMaster;
 import project.masters.dispatchers.SingleStoreDispatcher;
 import project.masters.dispatchers.TwoStoreDispatcher;
 
+/**
+ * Classe de test de l'application effectuant de multiple transactions.
+ *
+ */
 public class Tests {
 
 	public static void main(String[] args) {
